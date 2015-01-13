@@ -8,10 +8,10 @@ int fact(int n)
 }
 int main()
 {
-    int Num_of_Rows=0,num_transactions=0;
-    int i;int ans[100]={-2};int sum=0;
+    int i,sum=0,Num_of_Rows=0,num_transactions=0,*ans;
     scanf("%d",&Num_of_Rows);
     scanf("%d",&num_transactions);
+    ans = malloc(num_transactions * sizeof(int));
     for(i=0; i<= num_transactions ;i++)
     {
         // read 
