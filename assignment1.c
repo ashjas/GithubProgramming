@@ -9,54 +9,47 @@ int fact(int n)
 int main()
 {
     int Num_of_Rows=0,num_transactions=0;
-    int i;int read_line[100];int ans[100]={-2};int sum=0;
-    for(i=0;i<100;i++)
-        read_line[i]=-1;
+    int i;int ans[100]={-2};int sum=0;
     scanf("%d",&Num_of_Rows);
     scanf("%d",&num_transactions);
     for(i=0; i<= num_transactions ;i++)
     {
         // read 
-        int k=0;
+        int k=0,row=0;
         char line[1024], *p, *e;
-        long v;int j=0;int flag=0;
-        for(k=0;k<100;k++)
-            read_line[k]=-1;
+        long v;
         fgets(line, sizeof(line), stdin);
-        p = line;
-        for (p = line; ; p = e) {
+        p = line;k=0;
+        for (p = line; ; p = e,k++) {
             v = strtol(p, &e, 10);
             if (p == e)
                 break;
-            read_line[j++]=(int)v;
-        }
-        j=0;
-        if(read_line[0] > Num_of_Rows )
-        {
-            ans[i] = -1;
-            continue;
-        }
-        //calculate sum of coefficients ith line now.
-        while(read_line[j+1] != -1)
-        {int a,b,c;
-            if(read_line[j+1] > Num_of_Rows || read_line[j+1] > read_line[0])
+            if(k == 0)
             {
-                flag = 1;
-                break;
+                if(v > Num_of_Rows)
+                {
+                    sum = -1;
+                    break;
+                }
+                row = (int)v;
             }
-            sum = sum + ( fact(read_line[0])/ ( fact(read_line[j+1]) * fact(read_line[0] - read_line[j+1]) )  );
-            j++;
+            else
+            {
+                if(v > Num_of_Rows || v > row )
+                {
+                    sum = -1;
+                    break;
+                }
+                else
+                    sum = sum + ( fact(row) / ( fact(v) * fact( row - v ) )  );
+            }
         }
-        if(flag == 0)
-            ans[i] = sum;
-        else
-            ans[i] = -1;
+        ans[i] = sum;
         sum = 0;
-
-
     }
     for (i=1;i<= num_transactions ; i++)
     {
         printf("%d ",ans[i]);
     }
+
 }
