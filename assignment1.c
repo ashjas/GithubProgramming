@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 int fact(int n)
 {
     if (n == 1 || n == 0)
@@ -21,11 +22,8 @@ int main()
         long v;int j=0;int flag=0;
         for(k=0;k<100;k++)
             read_line[k]=-1;
-        if(i==0)
-            getchar();
         fgets(line, sizeof(line), stdin);
         p = line;
-        //printf("%s",p);
         for (p = line; ; p = e) {
             v = strtol(p, &e, 10);
             if (p == e)
@@ -33,7 +31,7 @@ int main()
             read_line[j++]=(int)v;
         }
         j=0;
-        if(read_line[0] > Num_of_Rows || read_line[0] == 0)
+        if(read_line[0] > Num_of_Rows )
         {
             ans[i] = -1;
             continue;
@@ -57,7 +55,7 @@ int main()
 
 
     }
-    for (i=0;i< num_transactions ; i++)
+    for (i=1;i<= num_transactions ; i++)
     {
         printf("%d ",ans[i]);
     }
