@@ -32,10 +32,15 @@ int main()
                     break;
                 }
                 row = (int)v;
+                if(v < 0 )
+                {
+                    sum = -1;
+                    break;
+                }
             }
             else
             {
-                if(v > Num_of_Rows || v > row )
+                if(v > Num_of_Rows || v > row || v < 0)
                 {
                     sum = -1;
                     break;
