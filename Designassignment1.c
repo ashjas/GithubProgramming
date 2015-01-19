@@ -1,39 +1,35 @@
 #include<stdio.h>
+int exp(int a, int pow)
+{
+    if(pow<1)
+        return 1;
+    return a * exp(a,pow-1);
+}
 int main()
 {
     int num_of_words=0,i;
     int ar[26]={2,2,2,3,3,3,4,4,4,5,5,5,6,6,6,7,7,7,7,8,8,8,9,9,9,9};
-    char aWord[50];
-        int j=0;
     scanf("%d",&num_of_words);
-    //int *keySequence = malloc(sizeof(int) * num_of_words);
     int *keySequence[num_of_words];
     for (i=0;i<num_of_words;i++)
     {
-        char * seqStr=NULL;
-        int * seqInt=NULL;
+        int j=0;
+        char aWord[50];
         scanf("%s",aWord);
-        //seqStr = malloc(sizeof(char) * strlen(aWord) + 1);
-        seqInt = malloc(sizeof(int) * strlen(aWord) + 1);
+        int wordLen= strlen(aWord);
         char a=*aWord;
+        int aWordInt=0;
         while(a != '\0')
         {
-            seqInt[j++] = ar[a - 97];
+            aWordInt += ar[a -97] * exp(10,wordLen - 1 - j);
+            j++;
             a = *(aWord + j);
         }
-        //for(i=0;i<strlen(aWord);i++)
-          //  printf("%d",seqInt[i]);
-        keySequence[i]=seqInt;
-        //keySequence[i] = atoi(seqStr);
+        keySequence[i]=aWordInt;
     }
-        for(i=0;i<num_of_words;i++)
-        {
-            for(j=0;j<4;j++)
-            {
-                int * abc = keySequence[i];
-                printf("%d",abc[j]);
-            }
-            printf("\n");
-        }
+    for(i=0;i<num_of_words;i++)
+    {
+        printf("\n%d",keySequence[i]);
+    }
 
 }
