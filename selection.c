@@ -12,14 +12,12 @@ void selection_sort(int arr[])
     int i,j;
     for(i=0;i<MAX;i++)
     {
-        int min=arr[i];
-        int minIdx=-1;
+        int minIdx = i;
         for(j=i+1;j<MAX;j++)
         {
-            if(arr[j] < min)
+            if(arr[j] < arr[minIdx])
             {
                 minIdx=j;
-                min = arr[j];
             }
         }
         if(minIdx > 0)
