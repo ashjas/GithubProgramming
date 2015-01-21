@@ -20,7 +20,7 @@ void selection_sort(int arr[])
                 minIdx=j;
             }
         }
-        if(minIdx > 0)
+        if(minIdx > i)
             swap(arr,i,minIdx);
     }
 }
