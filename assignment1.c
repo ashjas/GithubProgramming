@@ -56,5 +56,5 @@ int main()
     {
         printf("%d ",ans[i]);
     }
-
+    free(ans);
 }
