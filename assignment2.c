@@ -28,7 +28,7 @@ void insertNode(int e, int c)
         term * node = HEAD;
         while(node)/*traverse and find place for insertion in descending order.*/
         {
-            if(node->e < e)/*found create and insert the new term here.*/
+            if(node->e <= e)/*found create and insert the new term here.*/
             {
                 printf("\n adding e:%d,c:%d",e,c);
                 term * newTerm = malloc(sizeof(term));
@@ -51,7 +51,8 @@ void insertNode(int e, int c)
                 newTerm->c = c;
                 newTerm->next = NULL;
                 newTerm->prev = node;
-                //newTerm->prev->next = newTerm;
+                node->next = newTerm;
+                break;/* added last so this end of list now.*/
             }
             node=node->next;
         }
@@ -61,17 +62,17 @@ void insertNode(int e, int c)
 int main()
 {
     int i,j,k;
-    for(i=0;i<10;i++ )
+    for(i=0;i<300;i++ )
     {
         int e,c;
-        e = rand() % 10;c = rand() % 20;
+        e = rand() % 1000;c = rand() % 200;
 
         insertNode(e, c);
     }
     term* Node = HEAD;
     while(Node)
     {
-        printf("\nc:%d,e:%d",Node->c,Node->e);
+        printf("\ne:%d,c:%d",Node->e,Node->c);
         Node=Node->next;
         printf("\nNode:%p",Node);
     }
