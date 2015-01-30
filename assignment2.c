@@ -151,6 +151,7 @@ int main()
     }
     Answer = Multiply(Multiplicand,Multiplier);
     iter=Answer;
+    /*
     {
         int c=iter->c,e=iter->e;
         if(c != 0)
@@ -176,7 +177,7 @@ int main()
             }
         }
     }
-    iter=iter->next;
+    iter=iter->next;*/
     while(iter)
     {
         int c=iter->c,e=iter->e;
@@ -185,7 +186,7 @@ int main()
             if(c == 1)
             {
                 if(e == 0)
-                    printf("%+d",c);
+                    printf((iter == Answer)?"%d":"%+d",c);
                 else if(e == 1)
                     printf("x");
                 else if(e > 1)
@@ -194,11 +195,11 @@ int main()
             else
             {
                 if(e == 0)
-                    printf("%+d",c);
+                    printf((iter == Answer)?"%d":"%+d",c);
                 else if(e == 1)
-                    printf("%+dx",c);
+                    printf((iter == Answer)?"%dx":"%+dx",c);
                 else if(e > 1)
-                    printf("%+dx^%d",c,e);
+                    printf((iter == Answer)?"%dx^%d":"%+dx^%d",c,e);
 
             }
         }
