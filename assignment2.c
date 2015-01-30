@@ -151,34 +151,56 @@ int main()
     }
     Answer = Multiply(Multiplicand,Multiplier);
     iter=Answer;
-    if(iter->c != 0)
     {
-        if( iter->e > 1 && iter->c != 1 )
-            printf("%dx^%d",iter->c,iter->e);
-        else if (iter->e > 1 && iter->c == 1)
-            printf("x^%d",iter->e);
-        else if (iter->e == 1 && iter->c == 1)
-            printf("x");
-        else if (iter->e == 1 && iter->c != 1)
-            printf("%dx",iter->c);
-        if( iter->e == 0)
-            printf("%d",iter->c);
+        int c=iter->c,e=iter->e;
+        if(c != 0)
+        {
+            if(c == 1)
+            {
+                if(e == 0)
+                    printf("%d",c);
+                else if(e == 1)
+                    printf("x");
+                else if(e > 1)
+                    printf("x^%d",e);
+            }
+            else
+            {
+                if(e == 0)
+                    printf("%d",c);
+                else if(e == 1)
+                    printf("%dx",c);
+                else if(e > 1)
+                    printf("%dx^%d",c,e);
+
+            }
+        }
     }
     iter=iter->next;
     while(iter)
     {
-        if(iter->c != 0)
+        int c=iter->c,e=iter->e;
+        if(c != 0)
         {
-            if( iter->e > 1 && iter->c != 1 )
-                printf("%+dx^%d",iter->c,iter->e);
-            else if (iter->e > 1 && iter->c == 1)
-                printf("x^%d",iter->e);
-            else if (iter->e == 1 && iter->c == 1)
-                printf("x");
-            else if (iter->e == 1 && iter->c != 1)
-                printf("%+dx",iter->c);
-            if( iter->e == 0)
-                printf("%+d",iter->c);
+            if(c == 1)
+            {
+                if(e == 0)
+                    printf("%+d",c);
+                else if(e == 1)
+                    printf("x");
+                else if(e > 1)
+                    printf("x^%d",e);
+            }
+            else
+            {
+                if(e == 0)
+                    printf("%+d",c);
+                else if(e == 1)
+                    printf("%+dx",c);
+                else if(e > 1)
+                    printf("%+dx^%d",c,e);
+
+            }
         }
         else if (iter->next == NULL)
         {
