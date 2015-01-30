@@ -151,36 +151,10 @@ int main()
     }
     Answer = Multiply(Multiplicand,Multiplier);
     iter=Answer;
-    /*
-    {
-        int c=iter->c,e=iter->e;
-        if(c != 0)
-        {
-            if(c == 1)
-            {
-                if(e == 0)
-                    printf("%d",c);
-                else if(e == 1)
-                    printf("x");
-                else if(e > 1)
-                    printf("x^%d",e);
-            }
-            else
-            {
-                if(e == 0)
-                    printf("%d",c);
-                else if(e == 1)
-                    printf("%dx",c);
-                else if(e > 1)
-                    printf("%dx^%d",c,e);
-
-            }
-        }
-    }
-    iter=iter->next;*/
     while(iter)
     {
         int c=iter->c,e=iter->e;
+        static int oneTerm=1;
         if(c != 0)
         {
             if(c == 1)
@@ -188,11 +162,24 @@ int main()
                 if(e == 0)
                     printf((iter == Answer)?"%d":"%+d",c);
                 else if(e == 1)
-                    printf("x");
+                    printf((iter == Answer || oneTerm)?"x":"+x");
                 else if(e > 1)
                     printf("x^%d",e);
+                else if(e < 0)
+                    printf((iter == Answer || oneTerm)?"x^%+d":"+x^%+d",e);
             }
-            else
+            else if(c == -1)
+            {
+                if(e == 0)
+                    printf((iter == Answer || oneTerm)?"%d":"%+d",c);
+                else if(e == 1)
+                    printf((iter == Answer || oneTerm)?"x":"-x");
+                else if(e > 1)
+                    printf("-x^%d",e);
+                else if(e < 0)
+                    printf((iter == Answer || oneTerm)?"x^%+d":"-x^%+d",e);
+            }
+            else 
             {
                 if(e == 0)
                     printf((iter == Answer)?"%d":"%+d",c);
@@ -200,8 +187,11 @@ int main()
                     printf((iter == Answer)?"%dx":"%+dx",c);
                 else if(e > 1)
                     printf((iter == Answer)?"%dx^%d":"%+dx^%d",c,e);
+                else if(e < 0)
+                    printf((iter == Answer || oneTerm)?"%dx^%+d":"%+dx^%+d",c,e);
 
             }
+            oneTerm=0;
         }
         else if (iter->next == NULL)
         {
