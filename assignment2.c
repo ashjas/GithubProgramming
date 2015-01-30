@@ -8,11 +8,9 @@ typedef struct term
     struct term* prev;
 }term;
 
-//term * HEAD = NULL;
 
 term * insertNode(term *HEAD,int e, int c)
 {
-    //term * HEAD = LIST_HEAD;
     if(HEAD == NULL)
     {
         //printf("\n FIRST adding e:%d,c:%d",e,c);
@@ -76,7 +74,6 @@ term * Multiply(term *first, term *second)
         iter2 = second;
         iter1 = iter1->next;
     }
-//return answer;
 /*arrange answer terms now.*/
     iter1 = answer;
     int C=answer->c,E=answer->e;
@@ -96,9 +93,42 @@ term * Multiply(term *first, term *second)
         iter1 = iter1->next;
     }
     answerFinal = insertNode(answerFinal,E,C);
-
+    iter1=answer;
+    /*free temp answer*/
+while(iter1)
+{
+    term * node = iter1;
+    iter1 = iter1->next;
+    free(node);
+} 
 return answerFinal;
 }
+
+void freeAll(term * one,term * two,term * three)
+{
+    term * iter1=one;
+    while(iter1)
+    {
+        term * node = iter1;
+        iter1 = iter1->next;
+        free(node);
+    }
+    iter1=two;
+    while(iter1)
+    {
+        term * node = iter1;
+        iter1 = iter1->next;
+        free(node);
+    }
+    iter1=three;
+    while(iter1)
+    {
+        term * node = iter1;
+        iter1 = iter1->next;
+        free(node);
+    }
+}
+
 int main()
 {
     int i,j,k;
@@ -111,7 +141,6 @@ int main()
         int c,e;
         scanf("%d%d",&c,&e);
         Multiplicand = insertNode(Multiplicand,e,c);
-       // printf("Multiplicand:%p",Multiplicand);
     }
     scanf("%d",&nMler);
     for(i=0;i<nMler;i++)
@@ -119,11 +148,9 @@ int main()
         int c,e;
         scanf("%d%d",&c,&e);
         Multiplier = insertNode(Multiplier,e,c);
-        //printf("Multiplier:%p",Multiplier);
     }
     Answer = Multiply(Multiplicand,Multiplier);
     iter=Answer;
-//    printf("\n");
     if(iter->c != 0)
     {
         if( iter->e > 1 && iter->c != 1 )
@@ -159,38 +186,6 @@ int main()
         }
         iter=iter->next;
     }
-    /*test*/
-    /*
-    printf("\nMultiplicand:%p,Multiplier:%p\n",Multiplicand,Multiplier);
-    printf("\nMultiplicand:\n");
-    iter=Multiplicand;
-    while(iter)
-    {
-        printf("\ne:%d,c:%d",iter->e,iter->c);
-        iter=iter->next;
-        printf("\nNode:%p",iter);
-    }
-    printf("\nMultiplier:\n");
-    iter = Multiplier;
-    while(iter)
-    {
-        printf("\ne:%d,c:%d",iter->e,iter->c);
-        iter=iter->next;
-        printf("\nNode:%p",iter);
-    }*/
-/*    for(i=0;i<300;i++ )
-    {
-        int e,c;
-        e = rand() % 1000;c = rand() % 200;
-
-        insertNode(e, c);
-    }
-    term* Node = HEAD;
-    while(Node)
-    {
-        printf("\ne:%d,c:%d",Node->e,Node->c);
-        Node=Node->next;
-        printf("\nNode:%p",Node);
-    }
-    */
+    freeAll(Multiplicand,Multiplier,Answer);
+    return 0;
 }
