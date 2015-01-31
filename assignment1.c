@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-int fact(int n)
+long fact(long n)
 {
     if (n == 1 || n == 0)
         return 1;
@@ -8,14 +8,16 @@ int fact(int n)
 }
 int main()
 {
-    int i,sum=0,Num_of_Rows=0,num_transactions=0,*ans;
+    int i,Num_of_Rows=0,num_transactions=0,*ans;
+    long sum=0;
     scanf("%d",&Num_of_Rows);
     scanf("%d",&num_transactions);
     ans = malloc(num_transactions * sizeof(int));
     for(i=0; i<= num_transactions ;i++)
     {
         // read 
-        int k=0,row=0;
+        int k=0;
+        long row=0;
         char line[1024], *p, *e;
         long v;
         fgets(line, sizeof(line), stdin);
@@ -31,7 +33,7 @@ int main()
                     sum = -1;
                     break;
                 }
-                row = (int)v;
+                row = v;
                 if(v < 0 )
                 {
                     sum = -1;
