@@ -5,9 +5,21 @@
 using namespace std;
 int * Level,*Parent,Nnodes,Nedges,src,dst;
 int ** AdjMx;
+int isPathToSource(int start)
+{
+    if(start == -1)
+        return -1;
+    else if(start == src -1)
+        return 1;
+    else
+    {
+        start = Parent[start];
+        isPathToSource(start);
+    }
+}
 void BFS(int start)
 {
-    int i,j;
+    int i,j,foundPath=-1;
     queue<int> Q;
     for (i = 0; i < Nnodes; i++)
     {
@@ -32,6 +44,7 @@ void BFS(int start)
             }
         }
     }
+    /*
     printf("\nParentArray:");
     for(i = 0;i<Nnodes; i++)
         if(Parent[i] != -1)
@@ -40,6 +53,15 @@ void BFS(int start)
     for(i = 0;i<Nnodes; i++)
         if(Level[i] != -1)
             printf("\nLevel of %d:%d",i+1,Level[i]);
+    printf("\n");
+    /**/
+    if(Level[dst-1] != -1)
+    {
+        if(isPathToSource(src-1) == 1)
+            printf("%d",Level[dst-1]);
+    }
+    else
+            printf("%d",0);
 }
 int main()
 {
