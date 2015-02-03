@@ -9,7 +9,7 @@ int isPathToSource(int start)
 {
     if(start == -1)
         return -1;
-    else if(start == src -1)
+    else if(start == src )
         return 1;
     else
     {
@@ -55,10 +55,10 @@ void BFS(int start)
             printf("\nLevel of %d:%d",i+1,Level[i]);
     printf("\n");
     /**/
-    if(Level[dst-1] != -1)
+    if(Level[dst] != -1)
     {
-        if(isPathToSource(src-1) == 1)
-            printf("%d",Level[dst-1]);
+        if(isPathToSource(src) == 1)
+            printf("%d",Level[dst]);
     }
     else
             printf("%d",0);
@@ -83,6 +83,7 @@ int main()
         AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
     }
     scanf("%d%d",&src,&dst);
+    src--;dst--;
 /*    printf("\nAdjecency Mtrix:\n");
     for(i=0;i<Nnodes;i++)
     {
@@ -91,7 +92,7 @@ int main()
         printf("\n");
     }
     printf("\nsrc:%d,dst:%d",src,dst)/**/;
-    BFS(0);
+    BFS(src);
     return 0;
 
 }
