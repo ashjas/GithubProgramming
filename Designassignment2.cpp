@@ -73,8 +73,8 @@ int main()
     for(i = 0; i< Nnodes;i++)
     {
         AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
-        for(j=0;j<Nnodes;j++)
-            AdjMx[i][j]=0;
+    //    for(j=0;j<Nnodes;j++)
+      //      AdjMx[i][j]=0;
     }
     for(i = 0;i< Nedges;i++)
     {
