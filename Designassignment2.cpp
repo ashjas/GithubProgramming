@@ -2,9 +2,16 @@
 #include<queue>
 #include<stdio.h>
 #include<stdlib.h>
+#include<vector>
 using namespace std;
 int * Level,*Parent,Nnodes,Nedges,src,dst;
-int ** AdjMx;
+struct node
+{
+    int child;
+    node * next;
+};
+vector<node*> AdjLst;
+//int ** AdjMx;
 int isPathToSource(int start)
 {
     if(start == -1)
@@ -31,15 +38,17 @@ void BFS(int start)
     {
         int explore = Q.front();
         Q.pop();
-        for(j = 0;j < Nnodes; j++)
+        //for(j = 0;j < Nnodes; j++)
+        node * t = AdjLst[explore];
+        while(t)
         {
-            if(AdjMx[explore][j] == 1)
+            //if(AdjMx[explore][j] == 1)
             {
-                if(Level[j] == -1)
+                if(Level[t->child] == -1)
                 {
-                    Level[j] = Level[explore] + 1;
-                    Parent[j] = explore;  
-                    Q.push(j);
+                    Level[t->child] = Level[explore] + 1;
+                    Parent[t->child] = explore;  
+                    Q.push(t->child);
                 }
             }
         }
@@ -63,24 +72,48 @@ void BFS(int start)
     else
             printf("%d",0);
 }
+void addChild(int prn,int child)
+{
+    node * N = (node*)malloc(sizeof(node));
+    N->child = child;
+    N->next=NULL;
+    if(AdjLst[prn] == NULL)
+        AdjLst[prn]=N;
+    else
+    {
+        node * t = AdjLst[prn];
+        while(t)
+        {
+            if(t->next == NULL)
+            {
+                t->next=N;
+            }
+            t=t->next;
+        }
+    }
+}
 int main()
 {
     int i,j,k;
     scanf("%d%d",&Nnodes,&Nedges);
     Level = (int*)malloc(Nnodes * sizeof(int));
     Parent = (int*)malloc(Nnodes * sizeof(int));
-    AdjMx=(int **)malloc(Nnodes * sizeof(int*));
+    //AdjMx=(int **)malloc(Nnodes * sizeof(int*));
+
     for(i = 0; i< Nnodes;i++)
     {
-        AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
+        //AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
     //    for(j=0;j<Nnodes;j++)
       //      AdjMx[i][j]=0;
+        AdjLst.push_back(NULL);
+
     }
     for(i = 0;i< Nedges;i++)
     {
         int p,q;
         scanf("%d%d",&p,&q);
-        AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
+        //AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
+        addChild(p,q);
     }
     scanf("%d%d",&src,&dst);
     src--;dst--;
