@@ -1,10 +1,17 @@
 //#include<iostream>
 #include<queue>
+#include<map>
 #include<stdio.h>
 #include<stdlib.h>
 using namespace std;
-int * Level,*Parent,Nnodes,Nedges,src,dst;
-int ** AdjMx;
+int /** Level,*Parent,*/Nnodes,Nedges,src,dst;
+struct adjList
+{
+    vector<int> vertices;
+};
+map< int,adjList > AdjMx;
+vector<int> Level,Parent;
+//int ** AdjMx;
 int isPathToSource(int start)
 {
     if(start == -1)
@@ -23,7 +30,9 @@ void BFS(int start)
     queue<int> Q;
     for (i = 0; i < Nnodes; i++)
     {
-        Parent[i] = Level[i] = -1;
+        Parent.push_back(-1);
+        Level.push_back(-1);
+        //Parent[i] = Level[i] = -1;
     }
     Level[start] = Parent[start] = 0;
     Q.push(start);
@@ -31,15 +40,16 @@ void BFS(int start)
     {
         int explore = Q.front();
         Q.pop();
-        for(j = 0;j < Nnodes; j++)
+        for(j = 0;j < AdjMx[explore].vertices.size(); j++)
         {
-            if(AdjMx[explore][j] == 1)
+            //if(AdjMx[explore].vertices[j] == 1)
             {
-                if(Level[j] == -1)
+                //if(Level[j] == -1)
+                if(Level[AdjMx[explore].vertices[j]] == -1)
                 {
-                    Level[j] = Level[explore] + 1;
-                    Parent[j] = explore;  
-                    Q.push(j);
+                    Level[AdjMx[explore].vertices[j]] = Level[explore] + 1;
+                    Parent[AdjMx[explore].vertices[j]] = explore;  
+                    Q.push(AdjMx[explore].vertices[j]);
                 }
             }
         }
@@ -67,12 +77,12 @@ int main()
 {
     int i,j,k;
     scanf("%d%d",&Nnodes,&Nedges);
-    Level = (int*)malloc(Nnodes * sizeof(int));
-    Parent = (int*)malloc(Nnodes * sizeof(int));
-    AdjMx=(int **)malloc(Nnodes * sizeof(int*));
-    for(i = 0; i< Nnodes;i++)
+    //Level = (int*)malloc(Nnodes * sizeof(int));
+    //Parent = (int*)malloc(Nnodes * sizeof(int));
+    //AdjMx=(int **)malloc(Nnodes * sizeof(int*));
+    //for(i = 0; i< Nnodes;i++)
     {
-        AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
+      //  AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
     //    for(j=0;j<Nnodes;j++)
       //      AdjMx[i][j]=0;
     }
@@ -80,7 +90,11 @@ int main()
     {
         int p,q;
         scanf("%d%d",&p,&q);
-        AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
+        //AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
+        adjList a;a.vertices.push_back(q);
+        AdjMx[p]=a;
+        //AdjMx.push_back(a);
+        //AdjMx[p].vertices[q] = 1;
     }
     scanf("%d%d",&src,&dst);
     src--;dst--;
