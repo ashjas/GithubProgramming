@@ -40,6 +40,7 @@ void BFS(int start)
         Q.pop();
         //for(j = 0;j < Nnodes; j++)
         node * t = AdjLst[explore];
+        //printf("\nt:%p",t);
         while(t)
         {
             //if(AdjMx[explore][j] == 1)
@@ -51,6 +52,7 @@ void BFS(int start)
                     Q.push(t->child);
                 }
             }
+            t=t->next;
         }
     }
     /*
@@ -87,6 +89,7 @@ void addChild(int prn,int child)
             if(t->next == NULL)
             {
                 t->next=N;
+                break;
             }
             t=t->next;
         }
@@ -113,18 +116,25 @@ int main()
         int p,q;
         scanf("%d%d",&p,&q);
         //AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
-        addChild(p,q);
+        addChild(p-1,q-1);
+        addChild(q-1,p-1);
     }
     scanf("%d%d",&src,&dst);
     src--;dst--;
-/*    printf("\nAdjecency Mtrix:\n");
-    for(i=0;i<Nnodes;i++)
+    
+    /*printf("\nAdjecency Mtrix:\n");
+    for(i=0;i<AdjLst.size();i++)
     {
-        for(j=0;j<Nnodes;j++)
-            printf("%d:",AdjMx[i][j]);
+        node * t = AdjLst[i];
+        printf("\n%d->",i);
+        while(t)
+        {
+            printf("%d:",t->child);
+            t=t->next;
+        }
         printf("\n");
     }
-    printf("\nsrc:%d,dst:%d",src,dst)/**/;
+    printf("\nsrc:%d,dst:%d",src,dst);/**/
     BFS(src);
     return 0;
 
