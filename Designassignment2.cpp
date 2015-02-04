@@ -1,4 +1,3 @@
-//#include<iostream>
 #include<queue>
 #include<stdio.h>
 #include<stdlib.h>
@@ -11,7 +10,6 @@ struct node
     node * next;
 };
 vector<node*> AdjLst;
-//int ** AdjMx;
 int isPathToSource(int start)
 {
     if(start == -1)
@@ -38,41 +36,25 @@ void BFS(int start)
     {
         int explore = Q.front();
         Q.pop();
-        //for(j = 0;j < Nnodes; j++)
         node * t = AdjLst[explore];
-        //printf("\nt:%p",t);
         while(t)
         {
-            //if(AdjMx[explore][j] == 1)
+            if(Level[t->child] == -1)
             {
-                if(Level[t->child] == -1)
-                {
-                    Level[t->child] = Level[explore] + 1;
-                    Parent[t->child] = explore;  
-                    Q.push(t->child);
-                }
+                Level[t->child] = Level[explore] + 1;
+                Parent[t->child] = explore;  
+                Q.push(t->child);
             }
             t=t->next;
         }
     }
-    /*
-    printf("\nParentArray:");
-    for(i = 0;i<Nnodes; i++)
-        if(Parent[i] != -1)
-            printf("\nParent of %d:%d",i+1,Parent[i]+1);
-    printf("\nLevelArray:");
-    for(i = 0;i<Nnodes; i++)
-        if(Level[i] != -1)
-            printf("\nLevel of %d:%d",i+1,Level[i]);
-    printf("\n");
-    /**/
     if(Level[dst] != -1)
     {
         if(isPathToSource(src) == 1)
             printf("%d",Level[dst]);
     }
     else
-            printf("%d",0);
+        printf("%d",0);
 }
 void addChild(int prn,int child)
 {
@@ -101,41 +83,19 @@ int main()
     scanf("%d%d",&Nnodes,&Nedges);
     Level = (int*)malloc(Nnodes * sizeof(int));
     Parent = (int*)malloc(Nnodes * sizeof(int));
-    //AdjMx=(int **)malloc(Nnodes * sizeof(int*));
-
     for(i = 0; i< Nnodes;i++)
     {
-        //AdjMx[i] = (int *)malloc(Nnodes * sizeof(int));
-    //    for(j=0;j<Nnodes;j++)
-      //      AdjMx[i][j]=0;
         AdjLst.push_back(NULL);
-
     }
     for(i = 0;i< Nedges;i++)
     {
         int p,q;
         scanf("%d%d",&p,&q);
-        //AdjMx[q-1][p-1] = AdjMx[p-1][q-1] = 1;
         addChild(p-1,q-1);
         addChild(q-1,p-1);
     }
     scanf("%d%d",&src,&dst);
     src--;dst--;
-    
-    /*printf("\nAdjecency Mtrix:\n");
-    for(i=0;i<AdjLst.size();i++)
-    {
-        node * t = AdjLst[i];
-        printf("\n%d->",i);
-        while(t)
-        {
-            printf("%d:",t->child);
-            t=t->next;
-        }
-        printf("\n");
-    }
-    printf("\nsrc:%d,dst:%d",src,dst);/**/
     BFS(src);
     return 0;
-
 }
