@@ -1,7 +1,6 @@
 #include<queue>
 #include<stdio.h>
 #include<stdlib.h>
-#include<vector>
 using namespace std;
 int * Level,*Parent,Nnodes,Nedges,src,dst;
 struct node
@@ -9,7 +8,7 @@ struct node
     int child;
     node * next;
 };
-vector<node*> AdjLst;
+node** AdjLst;
 int isPathToSource(int start)
 {
     if(start == -1)
@@ -83,9 +82,10 @@ int main()
     scanf("%d%d",&Nnodes,&Nedges);
     Level = (int*)malloc(Nnodes * sizeof(int));
     Parent = (int*)malloc(Nnodes * sizeof(int));
+    AdjLst = (node**) malloc(Nnodes * sizeof(node*));
     for(i = 0; i< Nnodes;i++)
     {
-        AdjLst.push_back(NULL);
+        AdjLst[i]= NULL;
     }
     for(i = 0;i< Nedges;i++)
     {
