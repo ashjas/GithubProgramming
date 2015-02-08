@@ -1,12 +1,19 @@
 #include<stdio.h>
 #include<stdlib.h>
-int * Level,*Parent,Nnodes,Nedges,src,dst,*visited;
-int * pre,*post,count = 0;
+int * Level,*Parent,Nnodes,Nedges,src,dst,*visited,*component;
+int * pre,*post,count = 0,comp = 1;
 typedef struct node
 {
     int child;
     struct node * next;
 }node;
+typedef struct NTE/*non tree edges*/
+{
+    int s;
+    int t;
+    struct NTE * next;
+}NTE;
+struct NTE * HEAD_NTE = NULL;
 typedef struct Queue
 {
     int vertex;
@@ -106,10 +113,33 @@ void BFS(int start)
     else
         printf("%d",0);
 }
+void addNTE(int s,int t)
+{
+    NTE * N = (NTE*)malloc(sizeof(NTE));
+    N->s = s;
+    N->t = t;
+    N->next=NULL;
+    if(HEAD_NTE == NULL)
+        HEAD_NTE = N;
+    else
+    {
+        NTE * t = HEAD_NTE;
+        while(t)
+        {
+            if(t->next == NULL)
+            {
+                t->next=N;
+                break;
+            }
+            t=t->next;
+        }
+    }
+}
 void DFS(int start)
 {
     int i;
     visited[start] = 1;
+    component[start] = comp;
     for (i = 0;i<Nnodes; i++)
         printf("%d ",visited[i]);
     printf("\n");
@@ -122,6 +152,10 @@ void DFS(int start)
         {
             Parent[t->child] = start;
             DFS(t->child);
+        }
+        else if(visited[t->child] == 1)
+        {
+            addNTE(start,visited[t->child]);
         }
         t = t->next;
     }
@@ -160,10 +194,12 @@ int main()
     post = (int*)malloc(Nnodes * sizeof(int));
     AdjLst = (node**) malloc(Nnodes * sizeof(node*));
     visited = malloc(Nnodes * sizeof(int));
+    component = malloc(Nnodes * sizeof(int));
     for (i = 0; i < Nnodes; i++)
     {
         visited[i] = -1;
         post[i] = pre[i] = -1;
+        component[i] = -1;
     }
     for(i = 0; i< Nnodes;i++)
     {
@@ -179,11 +215,30 @@ int main()
     scanf("%d%d",&src,&dst);
     src--;dst--;
     //BFS(src);
-    DFS(src);
+    for(i = 0;i<Nnodes ; i++)
+    {
+        if(visited[i] == -1)
+        {
+            DFS(i);/*run DFS in a loop if any of the vertex remain unvisited, meaning there are more than one component*/
+            comp++;
+        }
+    }
     printf("Parent array:\n");
     for(i = 0; i< Nnodes;i++)
     {
         printf("%d ",Parent[i]);
+    }
+    printf("\nComponent array:\n");
+    for(i = 0; i< Nnodes;i++)
+    {
+        printf("%d ",component[i]);
+    }
+    printf("\nNTEs:\n");
+    NTE * n=HEAD_NTE;
+    while(n)
+    {
+        printf(" %d,%d |",n->s,n->t);
+        n = n->next;
     }
     printf("\nPre,post array:\n");
     for(i = 0; i< Nnodes;i++)
