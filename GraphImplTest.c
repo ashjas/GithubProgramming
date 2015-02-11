@@ -221,7 +221,8 @@ void addChild(int prn,int child)
 }
 int main()
 {
-    int i,j,k;
+    int i,j,k,directed = 0;
+    scanf("%d",&directed);
     scanf("%d%d",&Nnodes,&Nedges);
     Level = (int*)malloc(Nnodes * sizeof(int));
     Parent = (int*)malloc(Nnodes * sizeof(int));
@@ -245,7 +246,8 @@ int main()
         int p,q;
         scanf("%d%d",&p,&q);
         addChild(p-1,q-1);
-        addChild(q-1,p-1);
+        if(!directed)
+            addChild(q-1,p-1);
     }
     scanf("%d%d",&src,&dst);
     src--;dst--;
