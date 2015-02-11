@@ -1,5 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
+/*
+ Can classify edges using pre and post numbers
+ Tree/Forward edge (u,v) : Interval [pre(u),post(u)] contains [(pre(v),post(v)]
+ Backward edge (u,v): Interval [pre(v),post(v)] contains [(pre(u),post(u)]
+ Cross edge (u,v): Intervals [(pre(u),post(u)] and [(pre(v),post(v)] disjoint
+ */
 int * Level,*Parent,Nnodes,Nedges,src,dst,*visited,*component;
 int * pre,*post,count = 0,comp = 1;
 typedef struct node
@@ -271,6 +277,12 @@ int main()
     {
         printf("%d ",component[i]);
     }
+    printf("\nPre,post array:\n");
+    for(i = 0; i< Nnodes;i++)
+    {
+        printf("%d,%d ",pre[i],post[i]);
+    }
+    printf("\n");
     printf("\nTEs:\n");
     EDGES *n=HEAD_TE;
     while(n)
@@ -278,7 +290,7 @@ int main()
         printf(" %d,%d |",n->s+1,n->t+1);
         n = n->next;
     }
-    printf("\nSKIPPED Edgess:\n");
+    printf("\nSKIPPED Edges:\n");
     n=HEAD_SKIPPED;
     while(n)
     {
@@ -286,18 +298,23 @@ int main()
         n = n->next;
     }
     printNTE(HEAD_TE, HEAD_SKIPPED);
-    printf("\nNon Tree Edgess:\n");
+    printf("\nNon Tree Edges:\n");
     n=HEAD_NTE;
     while(n)
     {
-        printf(" %d,%d |",n->s+1,n->t+1);
+        if(pre[n->s] < pre[n->t] && post[n->s] > post[n->t])
+        {
+            printf(" FwdEdg %d,%d |\n",n->s+1,n->t+1);
+        }
+        if(pre[n->s] > pre[n->t] && post[n->s] < post[n->t])
+        {
+            printf(" BkwEdg %d,%d |\n",n->s+1,n->t+1);
+        }
+        if( (pre[n->s] < pre[n->t] && post[n->s] < post[n->t]) || ( pre[n->s] > pre[n->t] && post[n->s] > post[n->t]) )
+        {
+            printf(" CrsEdg %d,%d |\n",n->s+1,n->t+1);
+        }
         n = n->next;
     }
-    printf("\nPre,post array:\n");
-    for(i = 0; i< Nnodes;i++)
-    {
-        printf("%d,%d ",pre[i],post[i]);
-    }
-    printf("\n");
     return 0;
 }
