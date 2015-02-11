@@ -7,13 +7,15 @@ typedef struct node
     int child;
     struct node * next;
 }node;
-typedef struct NTE/*non tree edges*/
+typedef struct EDGES/* edges*/
 {
     int s;
     int t;
-    struct NTE * next;
-}NTE;
-struct NTE * HEAD_NTE = NULL;
+    struct EDGES * next;
+}EDGES;
+struct EDGES * HEAD_TE = NULL;
+struct EDGES * HEAD_SKIPPED = NULL;
+struct EDGES * HEAD_NTE = NULL;
 typedef struct Queue
 {
     int vertex;
@@ -74,7 +76,6 @@ int isPathToSource(int start)
         return 1;
     else
     {
-        printf("\neeeeeeeee\n");
         start = Parent[start];
         isPathToSource(start);
     }
@@ -113,36 +114,41 @@ void BFS(int start)
     else
         printf("%d",0);
 }
-void addNTE(int s,int t)
+void addEdge(EDGES ** EE ,int s,int t)
 {
-    NTE * N = (NTE*)malloc(sizeof(NTE));
+    EDGES * TreeEdges = *EE;
+
+    EDGES * N = (EDGES*)malloc(sizeof(EDGES));
     N->s = s;
     N->t = t;
     N->next=NULL;
-    if(HEAD_NTE == NULL)
-        HEAD_NTE = N;
+    if(TreeEdges == NULL)
+        TreeEdges = N;
     else
     {
-        NTE * t = HEAD_NTE;
-        while(t)
+        EDGES * itr = TreeEdges;
+        while(itr)
         {
-            if(t->next == NULL)
+            if(itr->next == NULL)
             {
-                t->next=N;
+                itr->next=N;
                 break;
             }
-            t=t->next;
+            if((itr->s == s && itr->t == t ) || (itr->s == t && itr->t == s))
+            {
+                free(N);
+                break;
+            }
+            itr=itr->next;
         }
     }
+    *EE = TreeEdges;
 }
 void DFS(int start)
 {
     int i;
     visited[start] = 1;
     component[start] = comp;
-    for (i = 0;i<Nnodes; i++)
-        printf("%d ",visited[i]);
-    printf("\n");
     node *t = AdjLst[start];
     pre[start] = count;
     count++;
@@ -151,18 +157,47 @@ void DFS(int start)
         if(visited[t->child] != 1)
         {
             Parent[t->child] = start;
+            addEdge(&HEAD_TE, start, t->child);
             DFS(t->child);
         }
-        else if(visited[t->child] == 1)
+        else
         {
-            addNTE(start,visited[t->child]);
+            addEdge(&HEAD_SKIPPED, start, t->child);
         }
         t = t->next;
     }
     post[start] = count; 
     count++;
 }
+void printNTE(EDGES *TE, EDGES *Skipped)
+{
+    EDGES *te = TE;
+    EDGES *sk = Skipped;
+    int found = 0;
+    while(sk)
+    {
+        te = TE;
+        while(te)
+        {
+            if( (sk->s == te->s && sk->t == te->t) || (sk->s == te->t && sk->t ==te->s))
+            {
+                found = 1;
+                break;
+            }
+            else
+                found = 0;
 
+            te = te->next;
+        }
+        if(!found)
+        {
+            addEdge(&HEAD_NTE,sk->s,sk->t);
+        }
+        sk = sk->next;
+    }
+    printf("\n");
+
+}
 void addChild(int prn,int child)
 {
     node * N = (node*)malloc(sizeof(node));
@@ -220,6 +255,7 @@ int main()
         if(visited[i] == -1)
         {
             DFS(i);/*run DFS in a loop if any of the vertex remain unvisited, meaning there are more than one component*/
+            printf("\nDFS:%d,comp:%d\n",i+1,comp);
             comp++;
         }
     }
@@ -233,11 +269,26 @@ int main()
     {
         printf("%d ",component[i]);
     }
-    printf("\nNTEs:\n");
-    NTE * n=HEAD_NTE;
+    printf("\nTEs:\n");
+    EDGES *n=HEAD_TE;
     while(n)
     {
-        printf(" %d,%d |",n->s,n->t);
+        printf(" %d,%d |",n->s+1,n->t+1);
+        n = n->next;
+    }
+    printf("\nSKIPPED Edgess:\n");
+    n=HEAD_SKIPPED;
+    while(n)
+    {
+        printf(" %d,%d |",n->s+1,n->t+1);
+        n = n->next;
+    }
+    printNTE(HEAD_TE, HEAD_SKIPPED);
+    printf("\nNon Tree Edgess:\n");
+    n=HEAD_NTE;
+    while(n)
+    {
+        printf(" %d,%d |",n->s+1,n->t+1);
         n = n->next;
     }
     printf("\nPre,post array:\n");
