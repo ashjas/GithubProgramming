@@ -231,9 +231,11 @@ void TopologicalOrder()
     Queue * orderQ = NULL;
     Queue * finalQ = NULL;
     int * indegree = (int*)malloc(Nnodes * sizeof(int));
+    int * LPT = (int*)malloc(Nnodes * sizeof(int));
     for (i = 0; i< Nnodes; i++)
     {
         indegree[i] = 0;/*initialize all vertex indegrees to 0*/
+        LPT[i] = 0;
     }
     for (i = 0; i< Nnodes; i++)/*find real indegrees*/
     {
@@ -258,11 +260,15 @@ void TopologicalOrder()
         while(n)/*now update indegrees of all neighbour vertices to vertex just enumerated with indegree 0*/
         {
             indegree[n->child] -= 1;
+            LPT[n->child] = LPT[enumerate] + 1> LPT[n->child] ? LPT[enumerate] + 1 : LPT[n->child] ;
             if(indegree[n->child] == 0)
                 pushToQ(&orderQ , n->child);
             n = n->next;
         }
     }
+    printf("\nLPT array:\n");
+    for (i = 0; i< Nnodes; i++)
+        printf("%d ",LPT[i]);
 }
 int main()
 {
