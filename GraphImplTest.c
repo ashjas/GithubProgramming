@@ -225,6 +225,45 @@ void addChild(int prn,int child)
         }
     }
 }
+void TopologicalOrder()
+{
+    int i,j,k;
+    Queue * orderQ = NULL;
+    Queue * finalQ = NULL;
+    int * indegree = (int*)malloc(Nnodes * sizeof(int));
+    for (i = 0; i< Nnodes; i++)
+    {
+        indegree[i] = 0;/*initialize all vertex indegrees to 0*/
+    }
+    for (i = 0; i< Nnodes; i++)/*find real indegrees*/
+    {
+        node * n = AdjLst[i];
+        while(n)
+        {
+            indegree[n->child] += 1;
+            n = n->next;
+        }
+    }
+    for (i = 0; i< Nnodes; i++)
+    {
+        if(indegree[i] == 0)
+            pushToQ(&orderQ , i);
+    }
+    printf("\nTopologically sorted order:\n");
+    while(!isQempty(orderQ))
+    {
+        int enumerate = popQ(&orderQ);
+        printf("%d ",enumerate+1);
+        node * n = AdjLst[enumerate];
+        while(n)/*now update indegrees of all neighbour vertices to vertex just enumerated with indegree 0*/
+        {
+            indegree[n->child] -= 1;
+            if(indegree[n->child] == 0)
+                pushToQ(&orderQ , n->child);
+            n = n->next;
+        }
+    }
+}
 int main()
 {
     int i,j,k,directed = 0;
@@ -316,5 +355,6 @@ int main()
         }
         n = n->next;
     }
+    TopologicalOrder();
     return 0;
 }

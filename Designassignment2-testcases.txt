@@ -33,6 +33,28 @@ PPT test case: Applications of DFS BFS undirected graph with components.
 11 8
 4 3
 
+PPT test case: Applications of DFS BFS directed graph with components.
+1
+12 13
+1 2
+1 5
+3 4
+3 7
+3 8
+4 8
+5 9
+5 10
+7 11
+7 8
+8 12
+9 10
+11 8
+4 3
+
+PPT test case: DAGs Topological Sorting
+
+
+
 
 Sample Input 1:
 
