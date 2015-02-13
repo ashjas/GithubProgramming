@@ -6,13 +6,20 @@
  Backward edge (u,v): Interval [pre(v),post(v)] contains [(pre(u),post(u)]
  Cross edge (u,v): Intervals [(pre(u),post(u)] and [(pre(v),post(v)] disjoint
  */
-int * Level,*Parent,Nnodes,Nedges,src,dst,*visited,*component;
+int * Level,*Parent,Nnodes,Nedges,src,dst,*visited,*visitedW,*component,*Distance;
 int * pre,*post,count = 0,comp = 1;
+int maxWeight;
 typedef struct node
 {
     int child;
     struct node * next;
 }node;
+typedef struct Wnode
+{
+    int child;
+    int weight;
+    struct Wnode * next;
+}Wnode;
 typedef struct EDGES/* edges*/
 {
     int s;
@@ -74,6 +81,7 @@ int popQ(Queue ** QQ)
 
 }
 node** AdjLst;
+Wnode** WAdjLst;
 int isPathToSource(int start)
 {
     if(start == -1)
@@ -175,6 +183,42 @@ void DFS(int start)
     post[start] = count; 
     count++;
 }
+void dijkstraPath(int start)
+{
+    int i,j;
+    for (i = 0; i < Nnodes; i++)
+    {
+       Distance[i] = maxWeight;
+    }
+    Distance[start] = 0;
+    for(i = 0; i<Nnodes; i++)
+    {
+        int u;
+        int minDis=maxWeight;
+        for (j=0;j<Nnodes;j++)
+        {
+            if(visitedW[j] == -1)
+                if (Distance[j]<minDis)
+                {
+                    minDis = Distance[j];
+                    u = j;
+                }
+        }
+        visitedW[u] = 1;
+        Wnode * n = WAdjLst[u];
+        while(n)
+        {
+            if(visitedW[n->child] == -1 && Distance[n->child] > (Distance[u] + n->weight))
+                Distance[n->child] =  Distance[u] + n->weight;
+            n = n->next;
+        }
+    }
+    printf("\nDijkstra's Distance:\n");
+    for(i = 0; i < Nnodes; i++)
+        printf("%d ",Distance[i]);
+
+
+}
 void printNTE(EDGES *TE, EDGES *Skipped)
 {
     EDGES *te = TE;
@@ -214,6 +258,28 @@ void addChild(int prn,int child)
     else
     {
         node * t = AdjLst[prn];
+        while(t)
+        {
+            if(t->next == NULL)
+            {
+                t->next=N;
+                break;
+            }
+            t=t->next;
+        }
+    }
+}
+void addChildW(int prn,int child, int weight)
+{
+    Wnode * N = (Wnode*)malloc(sizeof(Wnode));
+    N->child = child;
+    N->weight = weight;
+    N->next=NULL;
+    if(WAdjLst[prn] == NULL)
+        WAdjLst[prn]=N;
+    else
+    {
+        Wnode * t = WAdjLst[prn];
         while(t)
         {
             if(t->next == NULL)
@@ -272,19 +338,31 @@ void TopologicalOrder()
 }
 int main()
 {
-    int i,j,k,directed = 0;
-    scanf("%d",&directed);
+    int i,j,k,type = 0/*0=undirected,1=directed,2=weighted undirected*/;
+    maxWeight = 0;
+    scanf("%d",&type);
     scanf("%d%d",&Nnodes,&Nedges);
     Level = (int*)malloc(Nnodes * sizeof(int));
     Parent = (int*)malloc(Nnodes * sizeof(int));
+    Distance = (int*)malloc(Nnodes * sizeof(int));
     pre = (int*)malloc(Nnodes * sizeof(int));
     post = (int*)malloc(Nnodes * sizeof(int));
     AdjLst = (node**) malloc(Nnodes * sizeof(node*));
+    if(type == 2)
+    {
+        WAdjLst = (Wnode**) malloc(Nnodes * sizeof(Wnode*));
+        for(i = 0; i< Nnodes;i++)
+        {
+            WAdjLst[i]= NULL;
+        }
+    }
     visited = malloc(Nnodes * sizeof(int));
+    visitedW = malloc(Nnodes * sizeof(int));
     component = malloc(Nnodes * sizeof(int));
     for (i = 0; i < Nnodes; i++)
     {
         visited[i] = -1;
+        visitedW[i] = -1;
         post[i] = pre[i] = -1;
         component[i] = -1;
     }
@@ -294,12 +372,27 @@ int main()
     }
     for(i = 0;i< Nedges;i++)
     {
-        int p,q;
-        scanf("%d%d",&p,&q);
-        addChild(p-1,q-1);
-        if(!directed)
+        int p,q,r;
+        if(type == 0)
+        {
+            scanf("%d%d",&p,&q);
+            addChild(p-1,q-1);
             addChild(q-1,p-1);
+        }
+        else if(type == 1)
+        {
+            scanf("%d%d",&p,&q);
+            addChild(p-1,q-1);
+        }
+        else if(type == 2)
+        {
+            scanf("%d%d%d",&p,&q,&r);
+            addChildW(p-1,q-1,r);
+            addChildW(q-1,p-1,r);
+            maxWeight += r;
+        }
     }
+    maxWeight++;
     scanf("%d%d",&src,&dst);
     src--;dst--;
     //BFS(src);
@@ -361,6 +454,8 @@ int main()
         }
         n = n->next;
     }
-    TopologicalOrder();
+    //TopologicalOrder();
+    if(type == 2)
+        dijkstraPath(src);
     return 0;
 }
