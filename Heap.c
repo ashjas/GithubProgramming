@@ -24,7 +24,7 @@ void fixHeapUp(int* heap, int i)
     int p = (i - 1) / 2;
     if(i == 0)/*reached the top*/
         return;
-    if(heap[p] > heap[i])
+    if(heap[p] < heap[i])
     {
         Swap(&heap[p], &heap[i]);
         fixHeapUp(heap, p);
@@ -35,11 +35,11 @@ void fixHeapDown(int* heap, int i)
 {
     int l = i*2 + 1;
     int r = i*2 + 2;
-    int minchild = Min(heap[l],heap[r]);
-    int minchildIdx = heap[l] < heap[r] ? l : r;
+    int minchild = Max(heap[l],heap[r]);
+    int minchildIdx = heap[l] > heap[r] ? l : r;
     if(r >= size)/*reached the top*/
         return;
-    if(heap[i] > minchild)
+    if(heap[i] < minchild)
     {
         Swap(&heap[i], &heap[minchildIdx]);
         fixHeapDown(heap, minchildIdx);
@@ -79,7 +79,7 @@ void updateHeapNode(int i, int* heap, int val)
 {
     int p = (i -1) /2;
     heap[i] = val;
-    if(heap[i] < heap[p] )
+    if(heap[i] > heap[p] )
         fixHeapUp(heap,i);
     else
         fixHeapDown(heap,i);
@@ -107,12 +107,12 @@ int main()
          size1= size;
     printf("\nenter i to update and its val:");
     scanf("%d%d",&ii,&val);
-    //for(i=0;i<size1;i++)
+    for(i=0;i<size1;i++)
     {
-        //printf("\nDeleted:%d",deleteMin(heap));
-        updateHeapNode(ii,heap,val);
+        printf("\nDeleted:%d",deleteMin(heap));
+        //updateHeapNode(ii,heap,val);
        // updateHeapNode(7,heap,3489);
-        print(heap);
+        //print(heap);
     }
 
 }
