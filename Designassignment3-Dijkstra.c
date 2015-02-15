@@ -17,23 +17,11 @@ void dijkstraPath(int start)
         Distance[i] = maxWeight;
     }
     Distance[start] = 0;
-    Wnode * st = WAdjLst[start];
     for(i = 0; i<maxNode; i++)
     {
-        static int u = 0,newchild;
+        int u;
         int minDis=maxWeight;
-        while(st && i > 0)
-        {
-            if(visitedW[st->child] == -1)
-                if (Distance[st->child]<minDis)
-                {
-                    minDis = Distance[st->child];
-                    u = st->child;
-                }
-            st = st->next;
-        }
-        /**/
-/*        for (j=0;j<maxNode;j++)
+        for (j=0;j<maxNode;j++)
         {
             if(visitedW[j] == -1)
                 if (Distance[j]<minDis)
@@ -42,34 +30,19 @@ void dijkstraPath(int start)
                     u = j;
                 }
         }
-        /**/
         visitedW[u] = 1;
         Wnode * n = WAdjLst[u];
-        minDis = maxWeight;
         while(n)
         {
             if(visitedW[n->child] == -1 && Distance[n->child] > (Distance[u] + n->weight))
-            {
                 Distance[n->child] =  Distance[u] + n->weight;
-                if(Distance[n->child] < minDis )
-                {
-                    minDis = Distance[n->child];
-                    newchild = n->child;
-                }
-            }
             n = n->next;
         }
-            u = newchild;
-  //      printf("\nminDis for %d:%d",u,minDis);
     }
     if(Distance[dst] == maxWeight)
         printf("%s\n","NO");
     else
         printf("%s\n%d\n","YES",Distance[dst]);
-    printf("\nDijkstra's Distance:\n");
-    for(i = 0; i < maxNode; i++)
-        //printf("%d,%d ",Distance[i],visitedW[i]);
-        printf("%d ",Distance[i]);
 
 
 }
@@ -121,17 +94,6 @@ int main()
     }
     maxWeight++;
     src--;dst--;
-    /*
-    for(i =0;i<maxNode;i++)
-    {
-        Wnode * n = WAdjLst[i];
-        printf("\ni=%d",i);
-        while(n)
-        {
-            printf(" |%d",n->child);
-            n = n->next;
-        }
-    }*/
     dijkstraPath(src);
     return 0;
 }
