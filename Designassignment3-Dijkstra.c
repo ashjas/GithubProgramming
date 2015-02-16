@@ -1,7 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 int Nnodes,Nedges,src,dst,*visitedW,*Distance,DSize;
-int maxWeight,maxNode = 0;
+int maxWeight,maxNode = 0,size = 0;
+int * NodeToHeap,*HeapToNode;
 typedef struct Wnode
 {
     int child;
@@ -18,81 +19,101 @@ typedef struct heap
 heap * Heap = NULL;
 void Swap(int *a, int *b)
 {
-    printf("\norig:%d,%d:",*a,*b);
     int temp = *a;
     *a = *b;
     *b = temp;
-    printf("\nswaped:%d,%d:",*a,*b);
 }
+
 int Max(int a, int b)
 {
     return a < b ? b : a;
 }
+
 int Min(int a, int b)
 {
     return a > b ? b : a;
 }
-void heapifyDown(int s,int* Distance)
+
+void fixHeapUp(int* heap, int i)
 {
-    int l = s*2 +1;
-    int r = s*2 +2;
-    if(l >= 12 || r >= 12)
+    int p = (i - 1) / 2;
+    if(i == 0)/*reached the top*/
         return;
-    int min = Min(Distance[l],Distance[r]);
-    if(Distance[s] < min)
-        return;
-    if(Distance[r] < Distance[l])
+    if(heap[p] > heap[i])
     {
-        Swap(&Distance[s],&Distance[r]);
-        heapifyDown(r,Distance);
-    }
-    else
-    {
-        Swap(&Distance[s],&Distance[l]);
-        heapifyDown(l,Distance);
+        Swap(&heap[p], &heap[i]);
+        Swap(&HeapToNode[p], &HeapToNode[i] );
+        Swap(&NodeToHeap[p], &NodeToHeap[i] );
+        fixHeapUp(heap, p);
     }
 }
-void heapifyUp(int s)
+
+void fixHeapDown(int* heap, int i)
 {
-    int p = (s - 1) / 2;
-    if(Distance[s] > Distance[p])
+    int l = i*2 + 1;
+    int r = i*2 + 2;
+    int minchild = Min(heap[l],heap[r]);
+    int minchildIdx = heap[l] < heap[r] ? l : r;
+    if(r >= size)/*reached the top*/
         return;
-    Swap(&Distance[s],&Distance[p]);
-    heapifyUp(p);
+    if(heap[i] > minchild)
+    {
+        Swap(&heap[i], &heap[minchildIdx]);
+        Swap(&HeapToNode[i], &HeapToNode[minchildIdx] );
+        Swap(&NodeToHeap[i], &NodeToHeap[minchildIdx] );
+        fixHeapDown(heap, minchildIdx);
+    }
 }
-int deleteMin(int *Distance)
+int * makeMinArrayHeap(int size, int* arr)/*Need not use this here as we have the Distance heap already created, all being a const Maxweight value.*/
 {
-    int min = Distance[0];
-    Distance[0] = Distance[DSize--];
-    heapifyDown(0,Distance);
+    int* heap,i;
+    heap = malloc(sizeof(int) * size);
+    heap[0] = arr[0];/*just start with first array as is*/
+    for(i=1 ;i < size;i++)
+    {
+        heap[i] = arr[i];
+        fixHeapUp(heap,i);
+    }
+    return heap;
 }
-void updateDistance(int s, int D, int* Distance)
+
+int deleteMin(int * heap)
 {
-    int l = s*2 +1;
-    int r = s*2 +2;
-    int min = Min(Distance[l],Distance[r]);
-    Distance[s]=D;
-    if(Distance[s] < min)
-        heapifyUp(s);
-    else
-        heapifyDown(s,Distance);
+    int ret = HeapToNode[0];
+    heap[0]=heap[size - 1];
+    HeapToNode[0] = HeapToNode[size -1];
+    NodeToHeap[0] = NodeToHeap[size -1];
+    size--;
+    fixHeapDown(heap, 0);
+    return ret;
 }
-int* makeHeap(int size, int* arr)
+void print(int *heap)
 {
     int i;
-    int * heap = malloc(sizeof(int) * size);
-    for( i=0;i<size;i++)
-        heap[i]=-1;
-    
+    printf("\nheapified array:\n");
+    for(i=0;i<size;i++)
+    {
+        printf("%d ",heap[i]);
+    }
+}
+void updateHeapNode(int i, int* heap, int val)
+{
+    int p = (i -1) /2;
+    heap[i] = val;
+    if(heap[i] < heap[p] )
+        fixHeapUp(heap,i);
+    else
+        fixHeapDown(heap,i);
 }
 void dijkstraPath(int start)
 {
     int i,j;
-    Distance[start] = 0;
+    //Distance[start] = 0;
+    updateHeapNode(start, Distance,0);
     for(i = 0; i<maxNode; i++)
     {
         int u;
-        int minDis=maxWeight;
+        /*int minDis=maxWeight;
         for (j=0;j<maxNode;j++)
         {
             if(visitedW[j] == -1)
@@ -101,16 +122,21 @@ void dijkstraPath(int start)
                     minDis = Distance[j];
                     u = j;
                 }
-        }
+        }*/
+        u = deleteMin(Distance);/*will give heap to node*/
         visitedW[u] = 1;
         Wnode * n = WAdjLst[u];
         while(n)
         {
-            if(visitedW[n->child] == -1 && Distance[n->child] > (Distance[u] + n->weight))
-                Distance[n->child] =  Distance[u] + n->weight;
+            int nodechild,nodemin;
+            nodechild = NodeToHeap[n->child]; nodemin = NodeToHeap[u];
+            if(visitedW[n->child] == -1 && Distance[nodechild] > (Distance[nodemin] + n->weight))
+                //Distance[nodechild] =  Distance[nodemin] + n->weight;
+                updateHeapNode(nodechild,Distance,(Distance[nodemin] + n->weight));
             n = n->next;
         }
     }
+    dst = NodeToHeap[dst];
     if(Distance[dst] == maxWeight)
         printf("%s\n","NO");
     else
@@ -165,22 +191,26 @@ int main()
     DSize = maxNode;
     Distance = (int*)malloc(maxNode * sizeof(int));
     visitedW = (int*)malloc(maxNode * sizeof(int));
+    NodeToHeap = (int*)malloc(maxNode * sizeof(int));
+    HeapToNode = (int*)malloc(maxNode * sizeof(int));
     for (i = 0; i < maxNode; i++)
     {
         Distance[i] = maxWeight;
         visitedW[i] = -1;
+        NodeToHeap[i] = i;
+        HeapToNode[i] = i;
     }
     src--;dst--;
     dijkstraPath(src);
     //int dist[12]={45,23,78,22,1,3,12,19,17,4,5,92};
-    int dist[12]={45,45,45,45,45,45,45,45,45,45,5,45};
-    printf("\norigarray:");
-    for (i =0;i<12;i++)
-        printf("%d ",dist[i]);
+    //int dist[12]={45,45,45,45,45,45,45,45,45,45,5,45};
+    //printf("\norigarray:");
+    //for (i =0;i<12;i++)
+    //    printf("%d ",dist[i]);
     //heapifyDown(0,dist);
-    updateDistance(6,4,dist);
-    printf("\nheapified array:");
-    for (i =0;i<12;i++)
-        printf("%d ",dist[i]);
+    //updateDistance(6,4,dist);
+    //printf("\nheapified array:");
+    //for (i =0;i<12;i++)
+    //    printf("%d ",dist[i]);
     return 0;
 }
