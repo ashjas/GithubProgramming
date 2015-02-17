@@ -42,8 +42,12 @@ void fixHeapUp(int* heap, int i)
     if(heap[p] > heap[i])
     {
         Swap(&heap[p], &heap[i]);
+        //HeapToNode[p]=i;
+        //NodeToHeap[i]=p;
         Swap(&HeapToNode[p], &HeapToNode[i] );
-        Swap(&NodeToHeap[p], &NodeToHeap[i] );
+        //Swap(&NodeToHeap[p], &NodeToHeap[i] );
+        NodeToHeap[HeapToNode[p]] = p;
+        NodeToHeap[HeapToNode[i]] = i;
         fixHeapUp(heap, p);
     }
 }
@@ -54,13 +58,17 @@ void fixHeapDown(int* heap, int i)
     int r = i*2 + 2;
     int minchild = Min(heap[l],heap[r]);
     int minchildIdx = heap[l] < heap[r] ? l : r;
-    if(r >= size)/*reached the top*/
+    if(r >= size)/*reached beyond the last leaf*/
         return;
     if(heap[i] > minchild)
     {
         Swap(&heap[i], &heap[minchildIdx]);
         Swap(&HeapToNode[i], &HeapToNode[minchildIdx] );
-        Swap(&NodeToHeap[i], &NodeToHeap[minchildIdx] );
+        //Swap(&NodeToHeap[i], &NodeToHeap[minchildIdx] );
+        NodeToHeap[HeapToNode[minchildIdx]] = minchildIdx;
+        NodeToHeap[HeapToNode[i]] = i;
+        //HeapToNode[minchildIdx]=i;
+        //NodeToHeap[i]=minchildIdx;
         fixHeapDown(heap, minchildIdx);
     }
 }
@@ -82,18 +90,23 @@ int deleteMin(int * heap)
     int ret = HeapToNode[0];
     heap[0]=heap[size - 1];
     HeapToNode[0] = HeapToNode[size -1];
-    NodeToHeap[0] = NodeToHeap[size -1];
+    //NodeToHeap[0] = NodeToHeap[size -1];
     size--;
     fixHeapDown(heap, 0);
     return ret;
 }
-void print(int *heap)
+void printheap(int *heap,int j)
 {
     int i;
-    printf("\nheapified array:\n");
+    printf("\nheapified array:%d\n",j);
     for(i=0;i<size;i++)
     {
         printf("%d ",heap[i]);
+    }
+    printf("\nvisited array:");
+    for(i=0;i<size;i++)
+    {
+        printf("%d ",visitedW[i]);
     }
 }
 void updateHeapNode(int i, int* heap, int val)
@@ -107,7 +120,8 @@ void updateHeapNode(int i, int* heap, int val)
 }
 void dijkstraPath(int start)
 {
-    int i,j;
+    int i,j,lastDist;
+    int printed=0;
     //Distance[start] = 0;
     updateHeapNode(start, Distance,0);
     for(i = 0; i<maxNode; i++)
@@ -123,24 +137,39 @@ void dijkstraPath(int start)
                     u = j;
                 }
         }*/
+        lastDist=Distance[0];
         u = deleteMin(Distance);/*will give heap to node*/
         visitedW[u] = 1;
+        if(visitedW[dst] == 1 && lastDist!= maxWeight)
+        {
+            //printf("\nAns Dist:%d,N2H%d\n",lastDist,u);
+            printf("%s\n%d\n","YES",lastDist);
+            printed=1;
+            //break;
+        }
+        else if(visitedW[dst] == -1 && lastDist == maxWeight) 
+            printf("%s\n","NO");
         Wnode * n = WAdjLst[u];
         while(n)
         {
             int nodechild,nodemin;
             nodechild = NodeToHeap[n->child]; nodemin = NodeToHeap[u];
-            if(visitedW[n->child] == -1 && Distance[nodechild] > (Distance[nodemin] + n->weight))
+            //if(visitedW[n->child] == -1 && Distance[nodechild] > (Distance[nodemin] + n->weight))
+            if(visitedW[n->child] == -1 && Distance[nodechild] > (lastDist + n->weight))
                 //Distance[nodechild] =  Distance[nodemin] + n->weight;
-                updateHeapNode(nodechild,Distance,(Distance[nodemin] + n->weight));
+                //updateHeapNode(nodechild,Distance,(Distance[nodemin] + n->weight));
+                updateHeapNode(nodechild,Distance,(lastDist + n->weight));
             n = n->next;
         }
+        //printheap(Distance,i);
     }
     dst = NodeToHeap[dst];
-    if(Distance[dst] == maxWeight)
-        printf("%s\n","NO");
-    else
-        printf("%s\n%d\n","YES",Distance[dst]);
+    //if(Distance[dst] == maxWeight)
+      //  printf("%s\n","NO");
+    //else
+    //if(!printed)
+      //   printf("%s\n","NO");
+       // printf("%s\n%d\n","YES",Distance[dst]);
 
 
 }
@@ -188,7 +217,7 @@ int main()
             maxNode = p > q ? p : q;
     }
     maxWeight++;
-    DSize = maxNode;
+    size = DSize = maxNode;
     Distance = (int*)malloc(maxNode * sizeof(int));
     visitedW = (int*)malloc(maxNode * sizeof(int));
     NodeToHeap = (int*)malloc(maxNode * sizeof(int));
