@@ -8,15 +8,15 @@ typedef struct coeff
     int x,y;
 }coeff;
 coeff A[9] ={
-            {-1,-1},
-            {-1,0},
-            {-1,1},
-            {0,-1},
-            {0,0},
-            {0,1},
-            {1,-1},
-            {1,0},
-            {1,1},
+            {-1,-1},//0
+            {-1,0},//1
+            {-1,1},//2
+            {0,-1},//3
+            {0,0},//4
+            {0,1},//5
+            {1,-1},//6
+            {1,0},//7
+            {1,1},//8
             };
 
 int PATH[8][8]={
@@ -39,90 +39,114 @@ int valid(int i, int j)
 void UR(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,n;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[0][m]].x , j + A[PATH[0][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y] );
+        else break;
     }
+    printf("\nUR:%s",buff);
 }
 void UL(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[1][m]].x , j + A[PATH[1][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y] );
+        else break;
     }
+    printf("\nUL:%s",buff);
 }
 void LU(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[2][m]].x , j + A[PATH[2][m]].y))
             sprintf(buff + strlen(buff) ,"%c",ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y] );
+        else break;
     }
+    printf("\nLU:%s",buff);
 }
 void RU(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[3][m]].x , j + A[PATH[3][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y] );
+        else break;
     }
+    printf("\nRU:%s",buff);
 }
 void DR(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[4][m]].x , j + A[PATH[4][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y] );
+        else break;
     }
+    printf("\nDR:%s",buff);
 }
 void DL(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[5][m]].x , j + A[PATH[5][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y] );
+        else break;
     }
+    printf("\nDL:%s",buff);
 }
 void LD(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[6][m]].x , j + A[PATH[6][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y] );
+        else break;
     }
+    printf("\nLD:%s",buff);
 }
 void RD(int i, int j)
 {
     char  buff[10];
-    buff[0]='\0';
+    buff[0]=ARR[i][j];
+    buff[1]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[7][m]].x , j + A[PATH[7][m]].y))
             sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y] );
+        else break;
     }
+    printf("\nRD:%s",buff);
 }
 void print(char arr[], int start, int end)
 {
@@ -158,22 +182,32 @@ void substrings(char arr[], int n)
 
 int main()
 {  
-    int i,j;
+    int i,j,s1,s2;
     scanf("%d%d",&M,&N); 
+    scanf("%d%d",&s1,&s2); 
+    printf("\n%d %d\n",M,N);
     ARR = (char **) malloc(sizeof(char*) * M);
     for(i=0;i<N;i++)
         ARR[i] = malloc(sizeof(char) * N);
     for(i =0;i<M;i++)
         for(j=0;j<N;j++)
-            scanf("%c",&ARR[i][j]);
+            scanf(" %c",&ARR[i][j]);
     
     for(i =0;i<M;i++)
         for(j=0;j<N;j++)
-            printf("%c",ARR[i][j]);
+            printf(" %c",ARR[i][j]);
     printf("\n");
+    UR(s1,s2);
+    UL(s1,s2);
+    LU(s1,s2);
+    RU(s1,s2);
+    DR(s1,s2);
+    DL(s1,s2);
+    LD(s1,s2);
+    RD(s1,s2);
     /*
-    char *str = malloc(100);
-    scanf("%s",str);
+       char *str = malloc(100);
+       scanf("%s",str);
     substrings(str,strlen(str));
     printf("count:%d",count);*/
     return 0;
