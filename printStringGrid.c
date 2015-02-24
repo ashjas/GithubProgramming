@@ -3,6 +3,11 @@
 #include<string.h>
 int count = 0,M,N;
 char **ARR;
+typedef struct nodeStr
+{
+    char * str;
+    struct nodeStr* next;
+}nodeStr;
 typedef struct coeff
 {
     int x,y;
@@ -32,7 +37,7 @@ int PATH[8][8]={
 
 int valid(int i, int j)
 {
-    if(i >= 0 && i <=M && j >= 0 && j <= N)
+    if(i >= 0 && i <M && j >= 0 && j < N)
         return 1;
     else return 0;
 }
@@ -45,7 +50,12 @@ void UR(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[0][m]].x , j + A[PATH[0][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y] );
+        {
+            char c = ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nUR:%s",buff);
@@ -59,7 +69,12 @@ void UL(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[1][m]].x , j + A[PATH[1][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y] );
+        {
+            char c = ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nUL:%s",buff);
@@ -73,7 +88,13 @@ void LU(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[2][m]].x , j + A[PATH[2][m]].y))
-            sprintf(buff + strlen(buff) ,"%c",ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y] );
+        {
+            char c = ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+
+            sprintf(buff + strlen(buff) ,"%c",c );
+        }
         else break;
     }
     printf("\nLU:%s",buff);
@@ -87,7 +108,13 @@ void RU(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[3][m]].x , j + A[PATH[3][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y] );
+        {
+            char c = ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nRU:%s",buff);
@@ -101,7 +128,13 @@ void DR(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[4][m]].x , j + A[PATH[4][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y] );
+        {
+            char c = ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nDR:%s",buff);
@@ -115,7 +148,12 @@ void DL(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[5][m]].x , j + A[PATH[5][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y] );
+        {
+            char c = ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nDL:%s",buff);
@@ -129,7 +167,12 @@ void LD(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[6][m]].x , j + A[PATH[6][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y] );
+        {
+            char c = ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nLD:%s",buff);
@@ -143,7 +186,12 @@ void RD(int i, int j)
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[7][m]].x , j + A[PATH[7][m]].y))
-            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y] );
+        {
+            char c = ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y];
+            if(buff[strlen(buff) - 1] == c)
+                break;
+            sprintf(buff + strlen(buff),"%c",c );
+        }
         else break;
     }
     printf("\nRD:%s",buff);
