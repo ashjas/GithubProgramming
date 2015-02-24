@@ -38,82 +38,90 @@ int valid(int i, int j)
 }
 void UR(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,n;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[0][m]].x , j + A[PATH[0][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y] );
     }
 }
 void UL(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[1][m]].x , j + A[PATH[1][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y] );
     }
 }
 void LU(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[2][m]].x , j + A[PATH[2][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y] );
+            sprintf(buff + strlen(buff) ,"%c",ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y] );
     }
 }
 void RU(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[3][m]].x , j + A[PATH[3][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y] );
     }
 }
 void DR(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[4][m]].x , j + A[PATH[4][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y] );
     }
 }
 void DL(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[5][m]].x , j + A[PATH[5][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y] );
     }
 }
 void LD(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[6][m]].x , j + A[PATH[6][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y] );
     }
 }
 void RD(int i, int j)
 {
-    char * buff[10];
+    char  buff[10];
+    buff[0]='\0';
     int m,k;
     for(m=0; m<8; m++)
     {
         if(valid(i + A[PATH[7][m]].x , j + A[PATH[7][m]].y))
-            sprintf(buff,"%c",ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y] );
+            sprintf(buff + strlen(buff),"%c",ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y] );
     }
 }
 void print(char arr[], int start, int end)
