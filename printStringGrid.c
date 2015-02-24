@@ -9,7 +9,8 @@ typedef struct nodeStr
     struct nodeStr* next;
 }nodeStr;
 nodeStr **StrArrVert;
-nodeStr **StrArrAns;
+nodeStr *StrArrVertSubstr = NULL;
+nodeStr *StrArrAns;
 typedef struct coeff
 {
     int x,y;
@@ -37,6 +38,82 @@ int PATH[8][8]={
                 {5,8,7,6,3,0,1,2},//RD
                 };
 
+struct nodeStr* SortedMerge(struct nodeStr* a, struct nodeStr* b);
+void FrontBackSplit(struct nodeStr* source,
+        struct nodeStr** frontRef, struct nodeStr** backRef);
+
+void MergeSort(struct nodeStr** headRef)
+{
+    struct nodeStr* head = *headRef;
+    struct nodeStr* a;
+    struct nodeStr* b;
+
+    if ((head == NULL) || (head->next == NULL))
+    {
+        return;
+    }
+
+    FrontBackSplit(head, &a, &b); 
+
+    MergeSort(&a);
+    MergeSort(&b);
+
+    *headRef = SortedMerge(a, b);
+}
+
+struct nodeStr* SortedMerge(struct nodeStr* a, struct nodeStr* b)
+{
+    struct nodeStr* result = NULL;
+
+    if (a == NULL)
+        return(b);
+    else if (b==NULL)
+        return(a);
+
+    //if (a->data <= b->data)
+    if (strcmp(a->str,b->str) <= 0)
+    {
+        result = a;
+        result->next = SortedMerge(a->next, b);
+    }
+    else
+    {
+        result = b;
+        result->next = SortedMerge(a, b->next);
+    }
+    return(result);
+}
+
+void FrontBackSplit(struct nodeStr* source,
+        struct nodeStr** frontRef, struct nodeStr** backRef)
+{
+    struct nodeStr* fast;
+    struct nodeStr* slow;
+    if (source==NULL || source->next==NULL)
+    {
+        *frontRef = source;
+        *backRef = NULL;
+    }
+    else
+    {
+        slow = source;
+        fast = source->next;
+
+        while (fast != NULL)
+        {
+            fast = fast->next;
+            if (fast != NULL)
+            {
+                slow = slow->next;
+                fast = fast->next;
+            }
+        }
+
+        *frontRef = source;
+        *backRef = slow->next;
+        slow->next = NULL;
+    }
+}
 int valid(int i, int j)
 {
     if(i >= 0 && i <M && j >= 0 && j < N)
@@ -45,6 +122,7 @@ int valid(int i, int j)
 }
 void AllPaths(int i, int j, int way)
 {
+    int k,flag=0;
     nodeStr * node = malloc(sizeof(nodeStr));
     node->str = malloc(sizeof(char) * 10);
     node->next = NULL;
@@ -72,295 +150,15 @@ void AllPaths(int i, int j, int way)
         if(valid(i + A[PATH[way][m]].x , j + A[PATH[way][m]].y))
         {
             char c = ARR[i + A[PATH[way][m]].x]  [j + A[PATH[way][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void UR(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
+            for(k=0;k<strlen(node->str);k++)
             {
-                n->next = node;
-                break;
+                if(node->str[k] == c)
+                {
+                    flag = 1;
+                    break;
+                }
             }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[0][m]].x , j + A[PATH[0][m]].y))
-        {
-            char c = ARR[i + A[PATH[0][m]].x]  [j + A[PATH[0][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void UL(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[1][m]].x , j + A[PATH[1][m]].y))
-        {
-            char c = ARR[i + A[PATH[1][m]].x]  [j + A[PATH[1][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void LU(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[2][m]].x , j + A[PATH[2][m]].y))
-        {
-            char c = ARR[i + A[PATH[2][m]].x]  [j + A[PATH[2][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void RU(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[3][m]].x , j + A[PATH[3][m]].y))
-        {
-            char c = ARR[i + A[PATH[3][m]].x]  [j + A[PATH[3][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void DR(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[4][m]].x , j + A[PATH[4][m]].y))
-        {
-            char c = ARR[i + A[PATH[4][m]].x]  [j + A[PATH[4][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void DL(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[5][m]].x , j + A[PATH[5][m]].y))
-        {
-            char c = ARR[i + A[PATH[5][m]].x]  [j + A[PATH[5][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void LD(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[6][m]].x , j + A[PATH[6][m]].y))
-        {
-            char c = ARR[i + A[PATH[6][m]].x]  [j + A[PATH[6][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
-                break;
-            sprintf(node->str + strlen(node->str),"%c",c );
-        }
-        else break;
-    }
-}
-void RD(int i, int j)
-{
-    nodeStr * node = malloc(sizeof(nodeStr));
-    node->str = malloc(sizeof(char) * 10);
-    node->next = NULL;
-    if(StrArrVert[IDX] == NULL)
-        StrArrVert[IDX] = node;
-    else
-    {
-        nodeStr * n = StrArrVert[IDX];
-        while(n)
-        {
-            if(n->next == NULL)
-            {
-                n->next = node;
-                break;
-            }
-            n = n->next;
-        }
-    }
-
-    node->str[0]=ARR[i][j];
-    node->str[1]='\0';
-    int m,n;
-    for(m=0; m<8; m++)
-    {
-        if(valid(i + A[PATH[7][m]].x , j + A[PATH[7][m]].y))
-        {
-            char c = ARR[i + A[PATH[7][m]].x]  [j + A[PATH[7][m]].y];
-            if(node->str[strlen(node->str) - 1] == c)
+            if(flag == 1)
                 break;
             sprintf(node->str + strlen(node->str),"%c",c );
         }
@@ -379,26 +177,65 @@ void print(char arr[], int start, int end)
 }
 
 
-void substrings(char arr[], int n)
+//void substrings(char arr[], int n)
+void substrings()
 {
-    int pass,j,start,end;
-    int no_of_strings = n-1;
-
-    for(pass=0;pass<n;pass++)
+    int i;
+    for(i=0;i<IDX;i++)
     {
-        start = 0;
-        end = start+pass;
-        for(j=no_of_strings;j>=0;j--)
+        nodeStr * n = StrArrVert[i];
+        while(n)
         {
-            print(arr,start, end);
-            start++;
-            end = start+pass;
+            int pass,j,start,end,i;
+            int no_of_strings = strlen(n->str) - 1;
+
+            for(pass=0;pass<strlen(n->str);pass++)
+            {
+                start = 0;
+                end = start+pass;
+                for(j=no_of_strings;j>=0;j--)
+                {
+                    //print(arr,start, end);
+                    nodeStr * sub = malloc(sizeof(nodeStr));
+                    sub->str = malloc(sizeof(char) * 10);
+                    sub->str[0]='\0';
+                    sub->next = NULL;
+
+                    for(i=start;i<=end;i++)
+                    {
+                        sprintf(sub->str + strlen(sub->str),"%c",n->str[i] );
+                    }
+                    if(StrArrVertSubstr == NULL)
+                        StrArrVertSubstr = sub;
+                    else
+                    {
+                        nodeStr* n = StrArrVertSubstr;
+                        while(n)
+                        {
+                            if(n->next == NULL)
+                            {
+                                n->next = sub;
+                                break;
+                            }
+                            n = n->next;
+                        }
+                    }
+                    //printf("\n");
+                    count ++;
+                    start++;
+                    end = start+pass;
+                }
+                no_of_strings--;
+            }
+            n = n->next;
         }
-        no_of_strings--;
     }
 
 }
+/*void Sort-Remove-Dupes()
+{
 
+}*/
 int main()
 {  
     int i,j,s1,s2i,way;
@@ -422,30 +259,65 @@ int main()
         {
             for(way = 0;way<8;way++)
                 AllPaths(i,j,way);
-        /*    UR(i,j);
-            UL(i,j);
-            LU(i,j);
-            RU(i,j);
-            DR(i,j);
-            DL(i,j);
-            LD(i,j);
-            RD(i,j);/**/
             IDX++;
         }
     for(i =0;i<M*N;i++)
+    {
+        printf("\n%d:",i);
+        nodeStr * n = StrArrVert[i];
+        while(n)
         {
-            printf("\n%d:",i);
-            nodeStr * n = StrArrVert[i];
-            while(n)
-            {
-                printf("|%s| ",n->str);
-                n = n->next;
-            }
+            printf("|%s| ",n->str);
+            n = n->next;
         }
-    /*
+    }
+    //generate substrs with no duplicates.
+    substrings();
+    nodeStr * n = StrArrVertSubstr;
+    printf("\n\nSubstrs:");
+    while(n)
+    {
+        printf("|%s|",n->str);
+        n = n->next;
+    }
+    MergeSort(&StrArrVertSubstr);
+    n = StrArrVertSubstr;
+    printf("\n\nSorted Substrs:");
+    while(n)
+    {
+        printf("|%s|",n->str);
+        n = n->next;
+    }
+    // no remove dupes.
+    n = StrArrVertSubstr;
+    StrArrAns = malloc(sizeof(nodeStr));
+    StrArrAns->str = StrArrVertSubstr->str;
+    StrArrAns->next = NULL;
+    nodeStr * last = StrArrAns;
+    n=n->next;
+    while(n)
+    {
+        if(strcmp(n->str,last->str) != 0)
+        {
+            nodeStr * t = malloc(sizeof(nodeStr));
+            t->next = NULL;
+            t->str = n->str;
+            last->next = t;
+            last = last->next;
+        }
+        n= n->next;
+    }
+    printf("\n\nNo dupes Substrs:");
+    n = StrArrAns;
+    while(n)
+    {
+        printf("|%s|",n->str);
+        n = n->next;
+    }
+   /* 
        char *str = malloc(100);
        scanf("%s",str);
-    substrings(str,strlen(str));
-    printf("count:%d",count);*/
+       substrings(str,strlen(str));
+       printf("count:%d",count);/**/
     return 0;
 }
