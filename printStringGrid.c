@@ -180,13 +180,46 @@ void print(char arr[], int start, int end)
 //void substrings(char arr[], int n)
 void substrings()
 {
-    int i;
+    int i,j,end=0,k;
     for(i=0;i<IDX;i++)
     {
         nodeStr * n = StrArrVert[i];
         while(n)
         {
-            int pass,j,start,end,i;
+            {
+                end = 0;
+                for(j=0;j<strlen(n->str);j++,end++)
+                {
+                    nodeStr * sub = malloc(sizeof(nodeStr));
+                    sub->str = malloc(sizeof(char) * 10);
+                    sub->str[0]='\0';
+                    sub->next = NULL;
+
+                    for(k=0;k<=end;k++)
+                    {
+                        sprintf(sub->str + strlen(sub->str),"%c",n->str[k] );
+                    }
+                    if(StrArrVertSubstr == NULL)
+                        StrArrVertSubstr = sub;
+                    else
+                    {
+                        nodeStr* nn = StrArrVertSubstr;
+                        while(nn)
+                        {
+                            if(nn->next == NULL)
+                            {
+                                nn->next = sub;
+                                break;
+                            }
+                            nn = nn->next;
+                        }
+                    }
+                }
+            }
+            n = n->next;
+#if 0 
+            
+            int pass,j,start,end,i,k;
             int no_of_strings = strlen(n->str) - 1;
 
             for(pass=0;pass<strlen(n->str);pass++)
@@ -201,23 +234,23 @@ void substrings()
                     sub->str[0]='\0';
                     sub->next = NULL;
 
-                    for(i=start;i<=end;i++)
+                    for(k=start;k<=end;k++)
                     {
-                        sprintf(sub->str + strlen(sub->str),"%c",n->str[i] );
+                        sprintf(sub->str + strlen(sub->str),"%c",n->str[k] );
                     }
                     if(StrArrVertSubstr == NULL)
                         StrArrVertSubstr = sub;
                     else
                     {
-                        nodeStr* n = StrArrVertSubstr;
-                        while(n)
+                        nodeStr* nn = StrArrVertSubstr;
+                        while(nn)
                         {
-                            if(n->next == NULL)
+                            if(nn->next == NULL)
                             {
-                                n->next = sub;
+                                nn->next = sub;
                                 break;
                             }
-                            n = n->next;
+                            nn = nn->next;
                         }
                     }
                     //printf("\n");
@@ -228,6 +261,7 @@ void substrings()
                 no_of_strings--;
             }
             n = n->next;
+#endif
         }
     }
 
@@ -253,7 +287,7 @@ int main()
     {
         StrArrVert[i] = NULL;// initialize linklist to be NULL initially.
     }
-    printf("\n");
+    //printf("\n");
     for(i = 0; i< M;i++)
         for(j=0;j<N;j++)
         {
@@ -263,29 +297,29 @@ int main()
         }
     for(i =0;i<M*N;i++)
     {
-        printf("\n%d:",i);
+        //printf("\n%d:",i);
         nodeStr * n = StrArrVert[i];
         while(n)
         {
-            printf("|%s| ",n->str);
+            //printf("|%s| ",n->str);
             n = n->next;
         }
     }
     //generate substrs with no duplicates.
     substrings();
     nodeStr * n = StrArrVertSubstr;
-    printf("\n\nSubstrs:");
+    //printf("\n\nSubstrs:");
     while(n)
     {
-        printf("|%s|",n->str);
+        //printf("|%s|",n->str);
         n = n->next;
     }
     MergeSort(&StrArrVertSubstr);
     n = StrArrVertSubstr;
-    printf("\n\nSorted Substrs:");
+    //printf("\n\nSorted Substrs:");
     while(n)
     {
-        printf("|%s|",n->str);
+      //  printf("|%s|",n->str);
         n = n->next;
     }
     // no remove dupes.
@@ -307,13 +341,14 @@ int main()
         }
         n= n->next;
     }
-    printf("\n\nNo dupes Substrs:");
+    //printf("\n\nNo dupes Substrs:");
     n = StrArrAns;
     while(n)
     {
-        printf("|%s|",n->str);
+        printf("%s ",n->str);
         n = n->next;
     }
+    printf("\n");
    /* 
        char *str = malloc(100);
        scanf("%s",str);
