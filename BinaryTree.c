@@ -189,58 +189,60 @@ void insertNode(Node * tree, int data)
         }
     }
 }
-int Query(Node * tree,int val)
+int Query(Node * tree,int val,int reset)
 {
     static int ans = 0;
+    if(reset)
+        ans = 0;
     if(!tree)
         return 0;
-    Query(tree->lChild,val);
+    Query(tree->lChild,val,0);
     if(tree->data == val)
-    {
-        if(list == NULL)
-        {
-            list = (List*)malloc(sizeof(List));
-            list->nd = tree;
-            list->next=NULL;
-            tail = list;
-        }
-        else
-        {
-            List *ll = (List*)malloc(sizeof(List));
-            ll->nd = tree;
-            ll->next = NULL;
-            tail->next = ll;
-            tail = ll;
-        }
         ans++;
-    }
-    Query(tree->rChild,val);
+    Query(tree->rChild,val,0);
     return ans;
 }
 void Remove(Node * tree, int val)
 {
-    List *list = NULL;
     if(!tree)
         return;
     Node * p = LastLevel2(tree);
-    List * ll = list;
-    while(ll)
-    {
-        ll->nd->data = p->data;
-        if(p->parent->lChild == p)
-        {
-            free(p);
-            p->parent->lChild = NULL;
-        }
-        else
-        {
-            free(p);
-            p->parent->rChild = NULL;
-        }
-        ll=ll->next;
-        Node * p = LastLevel2(tree);
-    }
 
+    Queue *Q = NULL;
+    pushToQ(&Q,tree);
+    while(!isQempty(Q))
+    {
+        Node* nn = popQ(&Q);
+        if(nn)
+        {
+            //if(nn->lChild && nn->lChild->data == val)
+            if(nn->data == val)
+            {
+                nn->lChild->data = p->data;
+                if(p->parent->lChild == p)
+                {
+                    p->parent->lChild = NULL;
+                    free(p);
+                    p = LastLevel2(tree);
+                }
+            }
+            else
+                pushToQ(&Q,nn->lChild);
+            //if(nn->rChild && nn->rChild->data == val)
+            if(nn->data == val)
+            {
+                nn->rChild->data = p->data;
+                if(p->parent->rChild == p)
+                {
+                    p->parent->rChild = NULL;
+                    free(p);
+                    p = LastLevel2(tree);
+                }
+            }
+            else
+                pushToQ(&Q,nn->rChild);
+        }
+    }
 }
 int main()
 {
@@ -270,14 +272,17 @@ int main()
                 break;
             case 'r':
                 scanf("%d",&t);
-                Query(tree,t);
+                printf("\ninorder before Remove\n");
+                inOrderTraversal(tree);
+                printf("\n\n");
+                Query(tree,t,1);
                 Remove(tree,t);
                 printf("\nRemove\n");
                 inOrderTraversal(tree);
                 break;
             case 'q':
                 scanf("%d",&t);
-                printf("\n%d",Query(tree,t));
+                printf("\n%d",Query(tree,t,1));
                 break;
             case 's':
                 scanf("%d",&t);
