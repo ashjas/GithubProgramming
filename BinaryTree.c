@@ -255,17 +255,26 @@ void Size(Node * tree, int val)
         Node* nn = popQ(&Q);
         if(nn)
         {
+            if(nn->data == val)
+            {
+                inOrderTraversal(nn,&sum,0);
+                //printf("\nsize of subtree:%d",sum);
+                printf("%d",sum);
+                break;
+            }
             if(nn->lChild && nn->lChild->data == val)
             {
-                inOrderTraversal(nn->lChild,&sum,1);
-                printf("\nsize of subtree:%d",sum);
+                inOrderTraversal(nn->lChild,&sum,0);
+                //printf("\nsize of subtree:%d",sum);
+                printf("%d",sum);
                 break;
             }
             pushToQ(&Q,nn->lChild);
             if(nn->rChild && nn->rChild->data == val)
             {
-                inOrderTraversal(nn->rChild,&sum,1);
-                printf("\nsize of subtree:%d",sum);
+                inOrderTraversal(nn->rChild,&sum,0);
+                //printf("\nsize of subtree:%d",sum);
+                printf("%d",sum);
                 break;
             }
             pushToQ(&Q,nn->rChild);
@@ -291,12 +300,36 @@ void Remove(Node * tree, int val)
         if(nn)
         {
         //printf("%d ",nn->data);
+            if(nn->data == val)
+            {
+                nn->data = p->data;
+                if(nn->data == p->data)
+                    pushToQ(&Q,nn);
+                //printf("\nremoving b/w levels:%d,%d",nn->lChild->level,p->level);
+                if(p->parent->lChild == p)
+                {
+                    p->parent->lChild = NULL;
+                    free(p);
+                }
+                else
+                {
+                    p->parent->rChild = NULL;
+                    free(p);
+                }
+                {
+                    p = LastParent(tree);
+                    if(p->rChild == NULL)
+                        p = p->lChild;// this has to be swapped and deleted.
+                    else
+                        p = p->rChild;
+                }
+            }
             if(nn->lChild && nn->lChild->data == val)
             {
                 nn->lChild->data = p->data;
                 if(nn->lChild->data == p->data)
                     pushToQ(&Q,nn);
-                printf("\nremoving b/w levels:%d,%d",nn->lChild->level,p->level);
+                //printf("\nremoving b/w levels:%d,%d",nn->lChild->level,p->level);
                 if(p->parent->lChild == p)
                 {
                     p->parent->lChild = NULL;
@@ -359,7 +392,7 @@ int main()
     }
     printf("\n");
     inOrderTraversal(tree,&a,1);
-    printf("\n");
+    //printf("\n");
     scanf("%d",&nOps);
     for(i=0;i<nOps;i++)
     {
@@ -370,29 +403,36 @@ int main()
                 scanf("%d",&t);
                 //printf("\nInsert:%d\n",t);
                 insertNode(tree,t);
-                //inOrderTraversal(tree);
+                printf("\n");
+                inOrderTraversal(tree,&a,1);
+                //printf("\nprint after insert");
+                //PrintTree(tree);
                 break;
             case 'r':
                 scanf("%d",&t);
                 //Query(tree,t,1);
-                printf("\nRemove:%d\n Before removal tree is:",t);
+                //printf("\nRemove:%d\n Before removal tree is:",t);
                 //inOrderTraversal(tree);
-                PrintTree(tree);
-                printf("\n");
+                //PrintTree(tree);
+                //printf("\n");
                 Remove(tree,t);
+                //printf("\n");
+                //PrintTree(tree);
+                //printf("\ninorder:");
                 printf("\n");
-                PrintTree(tree);
-                printf("\ninorder:");
                 inOrderTraversal(tree,&a,1);
+                //printf("\nprint after remove");
+                //PrintTree(tree);
                 break;
             case 'q':
                 scanf("%d",&t);
-                printf("\n%d",Query(tree,t,1));
+                printf("\n");
+                printf("%d",Query(tree,t,1));
                 break;
             case 's':
                 scanf("%d",&t);
-                printf("\nsize\n");
-                PrintTree(tree);
+                //printf("\nsize\n");
+                //PrintTree(tree);
                 printf("\n");
                 Size(tree,t);
                 //inOrderTraversal(tree,s);
