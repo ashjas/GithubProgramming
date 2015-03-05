@@ -3,7 +3,7 @@
 typedef struct node
 {
     int data;
-    int level;
+    int level;/*added initially.. but its not really used in any usefull calculation problem output*/
     struct node * parent;
     struct node * lChild;
     struct node * rChild;
@@ -72,7 +72,6 @@ Node* popQ(Queue ** QQ)
         *QQ = Q;
         return val;
     }
-
 }
 Node * initializeBinaryTree()
 {
@@ -88,46 +87,10 @@ void inOrderTraversal(Node * tree,int *sum,int print)
     inOrderTraversal(tree->lChild,sum,print);
     (*sum)++;
     if(print)
-    printf("%d ",tree->data);
+        printf("%d ",tree->data);
     inOrderTraversal(tree->rChild,sum,print);
 }
-Node * findParent(Node* tree, int level)
-{
-    Node* n = tree;
-    Node* ans=NULL;
-    if(!n)
-        return NULL;
-    if(n->level == level && (n->lChild == NULL || n->rChild == NULL))
-    {
-        return n;
-    }
-    ans = findParent(n->lChild,level);
-    if(!ans)
-        ans = findParent(n->rChild,level);
-    return ans;
-}
-Node * LastLevel(Node * tree, Node * node,int reset)
-{
-    static int lastLevel = 0;
-    if(reset)
-        lastLevel = 0;
-    Node * ans= NULL;
-    if(!node)
-        return NULL;
-    if(node->lChild == NULL || node->rChild == NULL )
-    {
-        lastLevel = node->level;
-       // return findParent(tree,lastLevel);
-    }
-    if(lastLevel == 0)
-    {
-        ans = LastLevel(tree,node->lChild,0);
-        if(!ans)
-            ans = LastLevel(tree,node->rChild,0);
-    }
-    return ans;
-}
-Node * LastLevel2(Node * tree )
+Node * LastParentForInsert(Node * tree )/*this is used for insertion, to get to the last parent, to which new node will be added as a child.*/
 {
     Queue *Q = NULL;
     pushToQ(&Q,tree);
@@ -147,7 +110,7 @@ Node * LastLevel2(Node * tree )
         }
     }
 }
-Node * LastParent(Node * tree )
+Node * LastParentForRemove(Node * tree )/*this gives the largest labled parent whose left/right gets deleted after swapping its value with key to be deleted.*/
 {
     Queue *Q = NULL;
     Node * lastParent = tree;;
@@ -176,7 +139,7 @@ Node * PrintTree(Node * tree )
     while(!isQempty(Q))
     {
         Node* nn = popQ(&Q);
-            printf("%d ",nn->data);
+        printf("%d ",nn->data);
         if(nn)
         {
             if(nn->lChild)
@@ -211,7 +174,7 @@ void insertNode(Node * tree, int data)
         n->level = level;
         n->lChild = n->rChild = NULL;
 
-        Node * p = LastLevel2(tree);
+        Node * p = LastParentForInsert(tree);
         if(p == NULL)
         {
             printf("\nerror: last parent is NULL!!\n");
@@ -258,14 +221,12 @@ void Size(Node * tree, int val)
             if(nn->data == val)
             {
                 inOrderTraversal(nn,&sum,0);
-                //printf("\nsize of subtree:%d",sum);
                 printf("%d",sum);
                 break;
             }
             if(nn->lChild && nn->lChild->data == val)
             {
                 inOrderTraversal(nn->lChild,&sum,0);
-                //printf("\nsize of subtree:%d",sum);
                 printf("%d",sum);
                 break;
             }
@@ -273,7 +234,6 @@ void Size(Node * tree, int val)
             if(nn->rChild && nn->rChild->data == val)
             {
                 inOrderTraversal(nn->rChild,&sum,0);
-                //printf("\nsize of subtree:%d",sum);
                 printf("%d",sum);
                 break;
             }
@@ -285,11 +245,11 @@ void Remove(Node * tree, int val)
 {
     if(!tree)
         return;
-    Node * p = LastParent(tree);
+    Node * p = LastParentForRemove(tree);
     if(p->rChild == NULL)
-        p = p->lChild;// this has to be swapped and deleted.
+        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
     else
-        p = p->rChild;
+        p = p->rChild;// otherwise this would be it.
 
 
     Queue *Q = NULL;
@@ -299,8 +259,7 @@ void Remove(Node * tree, int val)
         Node* nn = popQ(&Q);
         if(nn)
         {
-        //printf("%d ",nn->data);
-            if(nn->data == val)
+            if(nn->data == val)/* this is for checking if the current visited node has the key to be deleted.*/
             {
                 nn->data = p->data;
                 if(nn->data == p->data)
@@ -317,11 +276,11 @@ void Remove(Node * tree, int val)
                     free(p);
                 }
                 {
-                    p = LastParent(tree);
+                    p = LastParentForRemove(tree);
                     if(p->rChild == NULL)
-                        p = p->lChild;// this has to be swapped and deleted.
+                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
                     else
-                        p = p->rChild;
+                        p = p->rChild;// otherwise this would be it.
                 }
             }
             if(nn->lChild && nn->lChild->data == val)
@@ -341,15 +300,14 @@ void Remove(Node * tree, int val)
                     free(p);
                 }
                 {
-                    p = LastParent(tree);
+                    p = LastParentForRemove(tree);
                     if(p->rChild == NULL)
-                        p = p->lChild;// this has to be swapped and deleted.
+                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
                     else
-                        p = p->rChild;
+                        p = p->rChild;// otherwise this would be it.
                 }
             }
-            //else
-                pushToQ(&Q,nn->lChild);
+            pushToQ(&Q,nn->lChild);
             if(nn->rChild && nn->rChild->data == val)
             {
                 nn->rChild->data = p->data;
@@ -367,21 +325,20 @@ void Remove(Node * tree, int val)
 
                 }
                 {
-                    p = LastParent(tree);
+                    p = LastParentForRemove(tree);
                     if(p->rChild == NULL)
-                        p = p->lChild;// this has to be swapped and deleted.
+                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
                     else
-                        p = p->rChild;
+                        p = p->rChild;// otherwise this would be it.
                 }
             }
-            //else
-                pushToQ(&Q,nn->rChild);
+            pushToQ(&Q,nn->rChild);
         }
     }
 }
 int main()
 {
-    int N,i,t,nOps,a=99999,size=0;
+    int N,i,t,nOps,a,size=0;
     char c;
     Node* tree = initializeBinaryTree();
     scanf("%d",&N);
@@ -392,7 +349,6 @@ int main()
     }
     printf("\n");
     inOrderTraversal(tree,&a,1);
-    //printf("\n");
     scanf("%d",&nOps);
     for(i=0;i<nOps;i++)
     {
@@ -401,28 +357,15 @@ int main()
         {
             case 'i':
                 scanf("%d",&t);
-                //printf("\nInsert:%d\n",t);
                 insertNode(tree,t);
                 printf("\n");
                 inOrderTraversal(tree,&a,1);
-                //printf("\nprint after insert");
-                //PrintTree(tree);
                 break;
             case 'r':
                 scanf("%d",&t);
-                //Query(tree,t,1);
-                //printf("\nRemove:%d\n Before removal tree is:",t);
-                //inOrderTraversal(tree);
-                //PrintTree(tree);
-                //printf("\n");
                 Remove(tree,t);
-                //printf("\n");
-                //PrintTree(tree);
-                //printf("\ninorder:");
                 printf("\n");
                 inOrderTraversal(tree,&a,1);
-                //printf("\nprint after remove");
-                //PrintTree(tree);
                 break;
             case 'q':
                 scanf("%d",&t);
@@ -431,13 +374,9 @@ int main()
                 break;
             case 's':
                 scanf("%d",&t);
-                //printf("\nsize\n");
-                //PrintTree(tree);
                 printf("\n");
                 Size(tree,t);
-                //inOrderTraversal(tree,s);
                 break;
         }
     }
-
 }
