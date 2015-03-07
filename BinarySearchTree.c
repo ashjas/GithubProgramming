@@ -268,7 +268,7 @@ int main()
         scanf("%d",&t);
         tree = insertNode(tree,t);
     }
-//    printf("\n");
+    printf("\n");
     postOrderTraversal(tree,&a,1);
     scanf("%d",&nOps);
     for(i=0;i<nOps;i++)
@@ -285,18 +285,25 @@ int main()
                 //PrintTree(tree);
                 break;
             case 'r':
+                //printf("\nPrint: ");
+                //PrintTree(tree);
                 scanf("%d",&t);
-                removeNode(tree,t);
+                tree = removeNode(tree,t);
+                //printf("\n%p",tree);
                 printf("\n");
                 postOrderTraversal(tree,&a,1);
                 break;
             case 'q':
+                //printf("\nBefore Query Print: ");
+                //PrintTree(tree);
                 scanf("%d",&t);
                 printf("\n");
                 printf("%d",Query(tree,t));
                 depth = 0;
                 break;
             case 's':
+                //printf("\nPrint: ");
+                //PrintTree(tree);
                 scanf("%d",&t);
                 printf("\n");
                 Size(tree,t);
