@@ -23,6 +23,8 @@ int POW(int x, int y)
     return ans;
 
 }
+int printPostOrder= 0;
+int depth = 0;
 typedef struct Queue
 {
     Node * n;
@@ -152,66 +154,35 @@ Node * PrintTree(Node * tree )
         }
     }
 }
-void insertNode(Node * tree, int data)
+Node * NewNode(int val)
 {
-    static int level = 0;
-    static int count = 0;
-    int a;
-    if(!tree)
-    {
-        printf("\nTree not initialized!\n");
-        return;
-    }
-    count++;
-    Node * t = tree;
-    if(count == 1)
-    {
-        t->data = data;
-        t->level = level++;
-    }
-    else
-    {
-        if(count >= POW(2,level+1)  )
-            level++;
-        Node * n = (Node*) malloc(sizeof(Node));
-        n->data = data;
-        n->level = level;
-        n->lChild = n->rChild = NULL;
-
-        Node * p = LastParentForInsert(tree,data);
-        if(p == NULL)
-        {
-            printf("\nerror: last parent is NULL!!\n");
-            //print postOrderTraversal.
-            postOrderTraversal(tree,&a,1);
-            free(n);
-            return;
-            //exit(0);
-        }
-        if(p->data > data)
-        {
-            p->lChild = n;
-            n->parent = p;
-        }
-        else
-        {
-            p->rChild = n;
-            n->parent = p;
-        }
-    }
+    Node * temp = malloc(sizeof(Node));
+    temp->data = val;
+    temp->lChild = temp->rChild = NULL;
+    return temp;
 }
-int Query(Node * tree,int val,int reset)
+Node* insertNode(Node * tree, int data)
 {
-    static int ans = 0;
-    if(reset)
-        ans = 0;
+    if(tree == NULL)
+        return NewNode(data);
+    if(data < tree->data)
+        tree->lChild = insertNode(tree->lChild,data);
+    if(data > tree->data)
+        tree->rChild = insertNode(tree->rChild,data);
+    return tree;
+}
+int Query(Node * tree,int val)
+{
     if(!tree)
-        return 0;
-    Query(tree->lChild,val,0);
+        return depth = -1;
     if(tree->data == val)
-        ans++;
-    Query(tree->rChild,val,0);
-    return ans;
+        return depth;
+    depth++;
+    if(tree->data > val)
+        Query(tree->lChild,val);
+    else if(tree->data < val)
+        Query(tree->rChild,val);
+    return depth;
 }
 void Size(Node * tree, int val)
 {
@@ -248,113 +219,56 @@ void Size(Node * tree, int val)
         }
     }
 }
-void Remove(Node * tree, int val)
+Node * inOrderSuccessor(Node * tree)
 {
-    if(!tree)
-        return;
-    Node * p = LastParentForRemove(tree);
-    if(p->rChild == NULL)
-        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
-    else
-        p = p->rChild;// otherwise this would be it.
-
-
-    Queue *Q = NULL;
-    pushToQ(&Q,tree);
-    while(!isQempty(Q))
+    Node * temp = tree;
+    while(temp->lChild)
     {
-        Node* nn = popQ(&Q);
-        if(nn)
-        {
-            if(nn->data == val)/* this is for checking if the current visited node has the key to be deleted.*/
-            {
-                nn->data = p->data;
-                if(nn->data == p->data)
-                    pushToQ(&Q,nn);
-                //printf("\nremoving b/w levels:%d,%d",nn->lChild->level,p->level);
-                if(p->parent->lChild == p)
-                {
-                    p->parent->lChild = NULL;
-                    free(p);
-                }
-                else
-                {
-                    p->parent->rChild = NULL;
-                    free(p);
-                }
-                {
-                    p = LastParentForRemove(tree);
-                    if(p->rChild == NULL)
-                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
-                    else
-                        p = p->rChild;// otherwise this would be it.
-                }
-            }
-            if(nn->lChild && nn->lChild->data == val)
-            {
-                nn->lChild->data = p->data;
-                if(nn->lChild->data == p->data)
-                    pushToQ(&Q,nn);
-                //printf("\nremoving b/w levels:%d,%d",nn->lChild->level,p->level);
-                if(p->parent->lChild == p)
-                {
-                    p->parent->lChild = NULL;
-                    free(p);
-                }
-                else
-                {
-                    p->parent->rChild = NULL;
-                    free(p);
-                }
-                {
-                    p = LastParentForRemove(tree);
-                    if(p->rChild == NULL)
-                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
-                    else
-                        p = p->rChild;// otherwise this would be it.
-                }
-            }
-            pushToQ(&Q,nn->lChild);
-            if(nn->rChild && nn->rChild->data == val)
-            {
-                nn->rChild->data = p->data;
-                if(nn->rChild->data == p->data)
-                    pushToQ(&Q,nn);
-                if(p->parent->rChild == p)
-                {
-                    p->parent->rChild = NULL;
-                    free(p);
-                }
-                else
-                {
-                    p->parent->lChild = NULL;
-                    free(p);
-
-                }
-                {
-                    p = LastParentForRemove(tree);
-                    if(p->rChild == NULL)
-                        p = p->lChild;// this has to be the last leaf to be swapped and deleted.
-                    else
-                        p = p->rChild;// otherwise this would be it.
-                }
-            }
-            pushToQ(&Q,nn->rChild);
-        }
+        temp = temp->lChild;
     }
+    return temp;
+
+}
+Node* removeNode(Node * tree, int val)
+{
+    if(tree == NULL)
+        return tree;
+    if(tree->data < val)
+        tree->rChild = removeNode(tree->rChild, val);
+    else if(tree->data > val)
+        tree->lChild = removeNode(tree->lChild, val);
+    else
+    {
+        if(tree->lChild == NULL)
+        {
+            Node * temp = tree->rChild;
+            free(tree);
+            return temp;
+        }
+        else if(tree->rChild == NULL)
+        {
+            Node * temp = tree->lChild;
+            free(tree);
+            return temp;
+        }
+        Node * temp = inOrderSuccessor(tree->rChild);
+        tree->data = temp->data;
+        tree->rChild = removeNode(tree->rChild,temp->data);
+    }
+    return tree;
 }
 int main()
 {
     int N,i,t,nOps,a,size=0;
     char c;
-    Node* tree = initializeBinaryTree();
+    Node * tree = NULL;
     scanf("%d",&N);
     for(i=0;i<N;i++)
     {
         scanf("%d",&t);
-        insertNode(tree,t);
+        tree = insertNode(tree,t);
     }
-    printf("\n");
+//    printf("\n");
     postOrderTraversal(tree,&a,1);
     scanf("%d",&nOps);
     for(i=0;i<nOps;i++)
@@ -364,22 +278,23 @@ int main()
         {
             case 'i':
                 scanf("%d",&t);
-                insertNode(tree,t);
+                tree = insertNode(tree,t);
                 printf("\n");
                 postOrderTraversal(tree,&a,1);
-                printf("\nPrint: ");
-                PrintTree(tree);
+                //printf("\nPrint: ");
+                //PrintTree(tree);
                 break;
             case 'r':
                 scanf("%d",&t);
-                Remove(tree,t);
+                removeNode(tree,t);
                 printf("\n");
-                inOrderTraversal(tree,&a,1);
+                postOrderTraversal(tree,&a,1);
                 break;
             case 'q':
                 scanf("%d",&t);
                 printf("\n");
-                printf("%d",Query(tree,t,1));
+                printf("%d",Query(tree,t));
+                depth = 0;
                 break;
             case 's':
                 scanf("%d",&t);
