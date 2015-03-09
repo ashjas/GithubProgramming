@@ -75,13 +75,6 @@ Node* popQ(Queue ** QQ)
         return val;
     }
 }
-Node * initializeBinaryTree()
-{
-    Node * tree = (Node*) malloc(sizeof(Node));
-    tree->parent = tree->lChild = tree->rChild = NULL;
-    tree->data = -1;
-    return tree;
-}
 void postOrderTraversal(Node * tree,int *sum,int print)
 {
     if(!tree)
@@ -101,41 +94,6 @@ void inOrderTraversal(Node * tree,int *sum,int print)
     if(print)
         printf("%d ",tree->data);
     inOrderTraversal(tree->rChild,sum,print);
-}
-Node * LastParentForInsert(Node * tree ,int val)/*this is used for insertion, to get to the last parent, to which new node will be added as a child.*/
-{
-    if(!tree || tree->data == val)
-        return NULL;
-    if(tree->lChild == NULL && tree->data > val)
-        return tree;
-    if(tree->rChild == NULL && tree->data < val)
-        return tree;
-    if(tree->data < val)
-        LastParentForInsert(tree->rChild,val);
-    else
-        LastParentForInsert(tree->lChild,val);
-}
-Node * LastParentForRemove(Node * tree )/*this gives the largest labled parent whose left/right gets deleted after swapping its value with key to be deleted.*/
-{
-    Queue *Q = NULL;
-    Node * lastParent = tree;;
-    pushToQ(&Q,tree);
-    while(!isQempty(Q))
-    {
-        Node* nn = popQ(&Q);
-        if(nn)
-        {
-            if(nn->lChild == NULL)
-                return lastParent;
-            else
-                pushToQ(&Q,nn->lChild);
-            if(nn->rChild == NULL)
-                return nn;
-            else
-                pushToQ(&Q,nn->rChild);
-        }
-        lastParent = nn;
-    }
 }
 Node * PrintTree(Node * tree )
 {
@@ -281,29 +239,20 @@ int main()
                 tree = insertNode(tree,t);
                 printf("\n");
                 postOrderTraversal(tree,&a,1);
-                //printf("\nPrint: ");
-                //PrintTree(tree);
                 break;
             case 'r':
-                //printf("\nPrint: ");
-                //PrintTree(tree);
                 scanf("%d",&t);
                 tree = removeNode(tree,t);
-                //printf("\n%p",tree);
                 printf("\n");
                 postOrderTraversal(tree,&a,1);
                 break;
             case 'q':
-                //printf("\nBefore Query Print: ");
-                //PrintTree(tree);
                 scanf("%d",&t);
                 printf("\n");
                 printf("%d",Query(tree,t));
                 depth = 0;
                 break;
             case 's':
-                //printf("\nPrint: ");
-                //PrintTree(tree);
                 scanf("%d",&t);
                 printf("\n");
                 Size(tree,t);
