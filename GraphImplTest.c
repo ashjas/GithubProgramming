@@ -148,7 +148,7 @@ void addEdge(EDGES ** EE ,int s,int t)
                 itr->next=N;
                 break;
             }
-            if((itr->s == s && itr->t == t ) || (itr->s == t && itr->t == s))
+            if((itr->s == s && itr->t == t ) || (itr->s == t && itr->t == s))/*This is to check if an edge is already added from both directions,so skip adding it second time.*/
             {
                 free(N);
                 break;
@@ -297,7 +297,7 @@ void TopologicalOrder()
     Queue * orderQ = NULL;
     Queue * finalQ = NULL;
     int * indegree = (int*)malloc(Nnodes * sizeof(int));
-    int * LPT = (int*)malloc(Nnodes * sizeof(int));
+    int * LPT = (int*)malloc(Nnodes * sizeof(int));/*longest path array.*/
     for (i = 0; i< Nnodes; i++)
     {
         indegree[i] = 0;/*initialize all vertex indegrees to 0*/
@@ -326,7 +326,7 @@ void TopologicalOrder()
         while(n)/*now update indegrees of all neighbour vertices to vertex just enumerated with indegree 0*/
         {
             indegree[n->child] -= 1;
-            LPT[n->child] = LPT[enumerate] + 1> LPT[n->child] ? LPT[enumerate] + 1 : LPT[n->child] ;
+            LPT[n->child] = LPT[enumerate] + 1> LPT[n->child] ? LPT[enumerate] + 1 : LPT[n->child] ;/*Only update distance in LPT array if target node has distance < distance of enumerated node + 1*/
             if(indegree[n->child] == 0)
                 pushToQ(&orderQ , n->child);
             n = n->next;
