@@ -85,6 +85,16 @@ void postOrderTraversal(Node * tree,int *sum,int print)
     if(print)
         printf("%d ",tree->data);
 }
+void preOrderTraversal(Node * tree,int *sum,int print)
+{
+    if(!tree)
+        return ;
+    if(print)
+        printf("%d ",tree->data);
+    preOrderTraversal(tree->lChild,sum,print);
+    (*sum)++;
+    preOrderTraversal(tree->rChild,sum,print);
+}
 void inOrderTraversal(Node * tree,int *sum,int print)
 {
     if(!tree)
@@ -215,6 +225,38 @@ Node* removeNode(Node * tree, int val)
     }
     return tree;
 }
+int MAX(int a,int b)
+{
+    return a>b?a:b;
+}
+int height(Node * tree)
+{
+    if(!tree)
+        return 0;
+    int lHeight=0;
+    int rHeight=0;
+    lHeight = height(tree->lChild);
+    rHeight = height(tree->rChild);
+
+    return (1 + MAX(lHeight,rHeight));
+
+}
+int Diameter(Node * tree)
+{
+    if(!tree)
+        return 0;
+    int lHeight = 0;
+    int rHeight = 0;
+    int ld=0,rd=0;
+    lHeight = height(tree->lChild);
+    rHeight = height(tree->rChild);
+    
+    ld = Diameter(tree->lChild);
+    rd = Diameter(tree->rChild);
+
+    return (MAX(lHeight + rHeight+1,MAX(ld,rd)));
+
+}
 int main()
 {
     int N,i,t,nOps,a,size=0;
@@ -228,6 +270,10 @@ int main()
     }
     printf("\n");
     postOrderTraversal(tree,&a,1);
+    printf("pre:\n");
+    preOrderTraversal(tree,&a,1);
+    printf("in:\n");
+    inOrderTraversal(tree,&a,1);
     scanf("%d",&nOps);
     for(i=0;i<nOps;i++)
     {
@@ -256,6 +302,12 @@ int main()
                 scanf("%d",&t);
                 printf("\n");
                 Size(tree,t);
+                break;
+            case 'w':
+                printf("Dia:%d\n",Diameter(tree));
+                inOrderTraversal(tree,&a,1);
+                printf("\n");
+                postOrderTraversal(tree,&a,1);
                 break;
         }
     }
