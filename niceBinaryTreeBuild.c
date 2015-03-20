@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 
 typedef struct node
 {
@@ -18,25 +19,25 @@ void preOrder(Node * tree)
 {
     if(tree == NULL)
         return;
-    printf("%d ",tree->data);
+    printf("%c ",tree->data);
     preOrder(tree->left);
     preOrder(tree->right);
 }
-Node * buildNiceTree(Node * tree, char * str)
+int len;
+Node * buildNiceTree(Node * tree, char * str, int i)
 {
+    if(str[i] == '\0')
+        return NULL;
     if(tree == NULL)
     {
-        if(str[0] != '\n')
-            tree = newNode(str[0]);
-        else 
-            return NULL;
+            tree = newNode(str[i]);
     }
-    if(tree->data != 'l')
+    if(tree->data == 'n' && str[i] != '\0')
     {
-        tree->left = buildNiceTree(tree->left,str++);
+        tree->left = buildNiceTree(tree->left,str,i+1);
         if(tree->left)
             tree->left->parent = tree;
-        tree->right = buildNiceTree(tree->right,str++);
+        tree->right = buildNiceTree(tree->right,str,i+2);
         if(tree->right)
             tree->right->parent = tree;
     }
@@ -49,8 +50,9 @@ int main()
     Node * tree = NULL;
     str = malloc(sizeof(char) * 10000);
     scanf("%s",str);
-
-    tree = buildNiceTree(tree,str);
+    len=strlen(str);
+    printf("\nlen:%d\n",len);
+    tree = buildNiceTree(tree,str,0);
     printf("\nPre:");
     preOrder(tree);
     return 0;
