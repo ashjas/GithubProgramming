@@ -19,41 +19,83 @@ void preOrder(Node * tree)
 {
     if(tree == NULL)
         return;
-    printf("%c ",tree->data);
+    printf("%c",tree->data);
     preOrder(tree->left);
     preOrder(tree->right);
 }
 int len;
-Node * buildNiceTree(Node * tree, char * str, int i)
+int ii = -1;
+int size =0;
+int MAX(int a,int b)
 {
-    if(str[i] == '\0')
+    return a>b?a:b;
+}
+int Depth(Node * tree)
+{
+    if(!tree)
+        return 0;
+    int lH=0,rH=0;
+    lH = Depth(tree->left);
+    rH = Depth(tree->right);
+    return (1+ MAX(lH,rH));
+
+}
+Node * buildNiceTree(Node * tree, char * str)
+{
+    ++ii;
+    if(ii >len)
+        return;
+    if(str[ii] == '\0')
         return NULL;
     if(tree == NULL)
     {
-            tree = newNode(str[i]);
+            tree = newNode(str[ii]);
     }
-    if(tree->data == 'n' && str[i] != '\0')
+    if(tree->data == 'n' && str[ii] != '\0')
     {
-        tree->left = buildNiceTree(tree->left,str,i+1);
+        tree->left = buildNiceTree(tree->left,str);
         if(tree->left)
             tree->left->parent = tree;
-        tree->right = buildNiceTree(tree->right,str,i+2);
+        tree->right = buildNiceTree(tree->right,str);
         if(tree->right)
             tree->right->parent = tree;
     }
     return tree;
 
 }
-char * str = NULL;
+freeTree(Node * tree)
+{
+
+}
+char ** strArray = NULL;
 int main()
 {
-    Node * tree = NULL;
-    str = malloc(sizeof(char) * 10000);
-    scanf("%s",str);
-    len=strlen(str);
-    printf("\nlen:%d\n",len);
-    tree = buildNiceTree(tree,str,0);
-    printf("\nPre:");
-    preOrder(tree);
+    int T=0,i;
+    Node * tree[20] ;
+    for(i=0;i<20;i++)
+        tree[i] = NULL;
+        //tree = (Node**)maloc (sizeof(Node*) * 20);
+    scanf("%d",&T);
+    strArray = (char **)malloc(sizeof(char*) * T);
+    for(i=0;i<T;i++)
+    {
+        strArray[i] = malloc (sizeof(char) * 10000);
+        scanf(" %s",strArray[i]);
+        //printf("\nstr:%s",strArray[i]);
+    }
+    for(i=0;i<T;i++)
+    {
+        len = strlen(strArray[i]);
+        tree[i] = buildNiceTree(tree[i],strArray[i]);
+        //printf("\npre:");
+        //preOrder(tree);
+        printf("%d\n",Depth(tree[i])-1);
+        //tree = NULL;
+        ii=-1;
+    }
+    //len=strlen(str);
+    //printf("\nlen:%d\n",len);
+    //printf("\n");
+    //preOrder(tree);
     return 0;
 }
