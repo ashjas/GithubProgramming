@@ -14,6 +14,7 @@ Node * newNode(char c )
     Node * n = malloc (sizeof(Node));
     n->data = c;
     n->left = n->right = NULL;
+    return n;
 }
 void preOrder(Node * tree)
 {
@@ -44,7 +45,7 @@ Node * buildNiceTree(Node * tree, char * str)
 {
     ++ii;
     if(ii >len)
-        return;
+        return NULL;
     if(str[ii] == '\0')
         return NULL;
     if(tree == NULL)
@@ -61,10 +62,6 @@ Node * buildNiceTree(Node * tree, char * str)
             tree->right->parent = tree;
     }
     return tree;
-
-}
-freeTree(Node * tree)
-{
 
 }
 char ** strArray = NULL;
