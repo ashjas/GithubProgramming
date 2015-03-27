@@ -219,6 +219,97 @@ void dijkstraPath(int start)
 
 
 }
+int MIN(int a,int b)
+{
+    return a<b?a:b;
+}
+void bellmanFord(int s)
+{
+    int i,j,k;
+    int * Distance = malloc(sizeof(int) * Nnodes);
+    for(i=0;i<Nnodes;i++)
+    {
+        Distance[i] = maxWeight;
+    }
+    Distance[s] = 0;
+    for(i=0;i<Nnodes;i++)
+    {
+        for(j=0;j<Nnodes;j++)
+        {
+            Wnode * n = WAdjLst[j];
+            while(n)
+            {
+                //  if(Distance[n->child] > Distance[i] + n->weight)
+                Distance[n->child]= MIN(Distance[n->child], Distance[j] + n->weight );
+                n=n->next;
+            }
+        }
+    }
+    printf("\n");
+    for(j=0;j<Nnodes; j++)
+    {
+        printf("%d ",Distance[j]);
+    }
+}
+void floyd_warshall_all_pairs_shortest_path()
+{
+    int i,j,k;
+    /*
+    int ***W = (int***)malloc(sizeof(int**) * Nnodes);
+    for(i=0;i<Nnodes; i++)
+        W[i] = (int**)malloc(sizeof(int *) * Nnodes);
+    for(i=0;i<Nnodes; i++)
+        for(j=0;j<Nnodes; j++)
+            W[i][j] = (int*)malloc(sizeof(int ) * Nnodes);
+    for(i=0;i<Nnodes; i++)
+        for(j=0;j<Nnodes; j++)
+            W[i][j][0] = maxWeight;*/
+    int W[8][8][8];
+    for(i=0;i<Nnodes;i++)
+        for(j=0;j<Nnodes;j++)
+            for(k=0;k<Nnodes;k++)
+                W[i][j][k] = 0;
+    for(i=0;i<Nnodes;i++)
+        for(j=0;j<Nnodes;j++)
+            W[i][j][0] = maxWeight;
+
+    for(i=0;i<Nnodes; i++)
+    {
+        Wnode * n = WAdjLst[i];
+        while(n)
+        {
+            W[i][n->child][0] = n->weight;
+            n= n->next;
+        }
+    }
+    for(i=0;i<Nnodes; i++)
+    {
+        for(j=0;j<Nnodes; j++)
+        {
+            printf("%d ",W[i][j][0]);
+        }
+        printf("\n");
+    }
+    for(k=0;k<Nnodes;k++)
+        for(i=0;i<Nnodes;i++)
+            for(j=0;j<Nnodes;j++)
+            {
+                W[i][j][k]= MIN(W[i][j][k-1],W[i][k][k-1] + W[k][j][k-1]);
+            }
+    printf("\nall Ws");
+    for(k=0;k<Nnodes; k++)
+    {
+        for(i=0;i<Nnodes; i++)
+        {
+            for(j=0;j<Nnodes; j++)
+            {
+                printf("%d ",W[i][j][k]);
+            }
+            printf("\n");
+        }
+        printf("\n-----------");
+    }
+}
 void printNTE(EDGES *TE, EDGES *Skipped)
 {
     EDGES *te = TE;
@@ -388,7 +479,7 @@ int main()
         {
             scanf("%d%d%d",&p,&q,&r);
             addChildW(p-1,q-1,r);
-            addChildW(q-1,p-1,r);
+            //addChildW(q-1,p-1,r);
             maxWeight += r;
         }
     }
@@ -457,5 +548,9 @@ int main()
     //TopologicalOrder();
     if(type == 2)
         dijkstraPath(src);
+    if(type == 2)
+       floyd_warshall_all_pairs_shortest_path(); 
+    if(type == 2)
+        bellmanFord(src);
     return 0;
 }
