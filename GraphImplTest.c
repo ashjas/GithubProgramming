@@ -245,7 +245,7 @@ void bellmanFord(int s)
             }
         }
     }
-    printf("\n");
+    printf("\nbellmanFord paths:\n");
     for(j=0;j<Nnodes; j++)
     {
         printf("%d ",Distance[j]);
@@ -254,7 +254,7 @@ void bellmanFord(int s)
 void floyd_warshall_all_pairs_shortest_path()
 {
     int i,j,k;
-    /*
+    
     int ***W = (int***)malloc(sizeof(int**) * Nnodes);
     for(i=0;i<Nnodes; i++)
         W[i] = (int**)malloc(sizeof(int *) * Nnodes);
@@ -263,16 +263,18 @@ void floyd_warshall_all_pairs_shortest_path()
             W[i][j] = (int*)malloc(sizeof(int ) * Nnodes);
     for(i=0;i<Nnodes; i++)
         for(j=0;j<Nnodes; j++)
-            W[i][j][0] = maxWeight;*/
-    int W[8][8][8];
+            W[i][j][0] = maxWeight;
+//    int W[8][8][8];
     for(i=0;i<Nnodes;i++)
         for(j=0;j<Nnodes;j++)
             for(k=0;k<Nnodes;k++)
-                W[i][j][k] = 0;
+                W[i][j][k] = maxWeight;
+    /*
     for(i=0;i<Nnodes;i++)
         for(j=0;j<Nnodes;j++)
             W[i][j][0] = maxWeight;
-
+*/
+        printf("\n");
     for(i=0;i<Nnodes; i++)
     {
         Wnode * n = WAdjLst[i];
@@ -290,24 +292,26 @@ void floyd_warshall_all_pairs_shortest_path()
         }
         printf("\n");
     }
-    for(k=0;k<Nnodes;k++)
+    for(k=1;k<Nnodes;k++)
         for(i=0;i<Nnodes;i++)
             for(j=0;j<Nnodes;j++)
             {
                 W[i][j][k]= MIN(W[i][j][k-1],W[i][k][k-1] + W[k][j][k-1]);
             }
-    printf("\nall Ws");
+    printf("\nall Ws\n");
     for(k=0;k<Nnodes; k++)
     {
+        printf("\n--------%d:\n",k);
+        printf("     %d %d %d %d %d %d %d %d\n",1,2,3,4,5,6,7,8);
         for(i=0;i<Nnodes; i++)
         {
+            printf("r:%d: ",i+1);
             for(j=0;j<Nnodes; j++)
             {
                 printf("%d ",W[i][j][k]);
             }
             printf("\n");
         }
-        printf("\n-----------");
     }
 }
 void printNTE(EDGES *TE, EDGES *Skipped)
@@ -551,6 +555,7 @@ int main()
     if(type == 2)
        floyd_warshall_all_pairs_shortest_path(); 
     if(type == 2)
-        bellmanFord(src);
+        for(i=0;i<Nnodes;i++)
+        bellmanFord(i);
     return 0;
 }
