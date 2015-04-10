@@ -45,8 +45,8 @@ template<typename T> inline void checkMax(T& a, T b) { if (b > a) a = b; }
 char buf[1024*1024];
 
 int main() {
-	freopen("input.txt", "rt", stdin);
-	freopen("output.txt", "wt", stdout);
+	freopen("A-small-practice.in", "rt", stdin);
+//	freopen("output.txt", "wt", stdout);
 
 	gets(buf);
 	For(test, 1, atoi(buf)) {
@@ -70,10 +70,6 @@ int main() {
 					checkMin(dp[j], dp[id]+1);
 			dp[id] = 1000000;
 		}
-                Rep(i,s)
-                {
-                    printf("%d,",dp[i]);
-                }
 		printf("Case #%d: %d\n", test, *min_element(All(dp)));
 	}
 

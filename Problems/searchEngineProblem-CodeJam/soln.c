@@ -5,76 +5,101 @@
 
 typedef struct node
 {
-	char str[100];
+    char str[100];
 }Node;
+int updateArray(Node * arSE,int SE,Node * arSQ,int SQ,int * arFreq,int start)
+{
+    int i,j,k=-1;
+    for(i=0;i<SE;i++)
+        arFreq[i] = -1;
+    for(i=0;i<SE;i++)
+    {
+        for(j=start;j<SQ;j++)
+        {
+            if(strcmp(arSE[i].str,arSQ[j].str) == 0)
+            {
+                arFreq[i] = j;
+                break;
+            }
+        }
+    }
+    for (i=0;i<SE;i++)
+    {
+        if(arFreq[i] == -1)
+            return -1;
+        if(arFreq[i] > k)
+            k = arFreq[i];
+    }
+    return k;
+}
 int main()
 {
-	int i,j,k,T,a;
-	freopen("input.txt","r",stdin);
-	scanf("%d",&T);
-	char dump[5];
-	for(i=0;i<T;i++)
-	{
-		int SE,SQ,leastFreq=9999,leastIndex=0;
-		Node *arSE = NULL,*arSQ = NULL;
-		int * arSEFreq = NULL;
-				
-		scanf("%d",&SE);
-		arSE = (Node*)malloc(sizeof(Node) * SE);
-		arSEFreq = (int *)malloc(sizeof(int) * SE);
+    int i,j,k,T,a;
+    freopen("A-small-practice.in","r",stdin);
+    scanf("%d",&T);
+    char dump[5];
+    for(i=0;i<T;i++)
+    {
+        int SE,SQ,leastFreq=9999,leastIndex=0;
+        int max = 0,count=0,once =0,flag = 0;
+        char maxStr[100];
+        Node *arSE = NULL,*arSQ = NULL;
+        int * arSEFreq = NULL;
 
-		for(j=0;j<SE;j++)
-		{
-			arSEFreq[j] = 0;
-			//arSE[j].str[0]='\0';
-			//arSE[j] = (char *)malloc(sizeof(char) * 100);
-			//scanf("%[\^n]",arSE[j]);
-			//std::cin.getline(arSE[j].str,100);
-			if(j == 0)
-				gets(dump);
-			gets(arSE[j].str);
-			//printf("aa:%s\n",arSE[j].str);
-			//fgets (arSE[j], 100, stdin);
-		}
-		
-		scanf("%d",&SQ);
-		if(SQ == 0)
-		{
-			printf("#%d %d\n",i+1,0);
-			continue;
-		}
-		arSQ = (Node*)malloc(sizeof(Node) * SQ);
-		for(j=0;j<SQ;j++)
-		{
-			//arSQ[j] = (char *)malloc(sizeof(char) * 100);
-			//scanf("%[\^n]",arSQ[j]);
-			if(j == 0)
-				gets(dump);
-			gets(arSQ[j].str);
-			//printf("%s\n",arSQ[j].str);
-			//fgets (arSQ[j], 100, stdin);
-		}
+        scanf("%d",&SE);
+        arSE = (Node*)malloc(sizeof(Node) * SE);
+        arSEFreq = (int *)malloc(sizeof(int) * SE);
 
-		for(j=0;j<SE;j++)
-		{
-			for(k=0;k<SQ;k++)
-			{
-				//printf("%s \n %s ",ar);
-				if(strcmp(arSE[j].str,arSQ[k].str) == 0)
-					arSEFreq[j]++;
-			}
-		}
-		for(j=0;j<SE;j++)
-		{
-			if(arSEFreq[j] <= leastFreq)
-			{
-				leastFreq = arSEFreq[j];
-				leastIndex = j;
-			}
-		}
-		printf("#%d %d\n",i+1,leastFreq);
-		
-	}
-	//scanf("%d",&a);
-	return 0;
+        for(j=0;j<SE;j++)
+        {
+            arSEFreq[j] = -1;
+
+            if(j == 0)
+                gets(dump);
+            gets(arSE[j].str);
+
+        }
+
+        scanf("%d",&SQ);
+        //if(SQ == 0)
+        //{
+          //  printf("#%d %d\n",i+1,0);
+            //continue;
+        //}
+        arSQ = (Node*)malloc(sizeof(Node) * SQ);
+        for(j=0;j<SQ;j++)
+        {
+
+            if(j == 0)
+                gets(dump);
+            gets(arSQ[j].str);
+
+        }
+        max = updateArray(arSE,SE,arSQ,SQ,arSEFreq,0);
+
+        if(max >=0)
+        {
+            strcpy(maxStr,arSQ[max].str);
+            for(j=0;j<SQ;j++)
+            {
+                if(strcmp(maxStr,arSQ[j].str) != 0)
+                {
+                //     once =1;
+                    continue;
+                }
+                //else if(once == 1)
+                else
+                {
+                    max = updateArray(arSE,SE,arSQ,SQ,arSEFreq,j);
+                    count++;
+                    if(max == -1)
+                        break;
+
+                    strcpy(maxStr,arSQ[max].str);
+                }
+            }
+        }
+        printf("Case #%d %d\n",i+1,count);
+    }
+    return 0;
 }
