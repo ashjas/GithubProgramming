@@ -1,0 +1,63 @@
+Minimize Switching
+Submit count : 0 / 5
+Problem
+﻿There is a central system of search engines which handles all the queries first and then sends them to one of the Search Engines to process. 
+
+The central system sends a series of queries to one search engine,and can switch to another at any time. Queries must be processed in the order they are received. The central system must never send a query to a search engine whose name matches the query. In order to reduce costs, the number of switches should be minimized. 
+
+Your task is to tell us how many times the central system willhave to switch between search engines, assuming that we program it optimally.
+Input
+The first line of the input file contains the number of cases, N. N test cases follow.
+Each case starts with the number S -- the number of search engines. The next S lines each contain the name of a search engine. Each search engine name is no more than 100 characters long and contains only uppercase letters, lowercase letters, spaces, and numbers. There will not be two search engines with the same name.
+The following line contains a number Q -- the number of incoming queries. The next Q lines will each contain a query. Each query will be the name of a search engine in the case.
+Output
+For each input case, you should output:
+Case #X: Y
+Where X is the number of the test case and Y is the number of search engine switches. Do not count the initial choice of a search engine as a switch.
+Constraints:
+0 < N ≤ 20
+2 ≤ S ≤ 100
+0 ≤ Q ≤ 1000
+Sample
+
+Input 
+ 
+Output 
+ 
+2
+5
+Yeehaw
+NSM
+Dont Ask
+B9
+Googol
+10
+Yeehaw
+Yeehaw
+Googol
+B9
+Googol
+NSM
+B9
+NSM
+Dont Ask
+Googol
+5
+Yeehaw
+NSM
+Dont Ask
+B9
+Googol
+7
+Googol
+Dont Ask
+NSM
+NSM
+Yeehaw
+Yeehaw
+Googol
+ Case #1: 1
+Case #2: 0
+ 
+In the first case, one possible solution is to start by using DontAsk, and switch to NSM after query number 8.
+For the second case, you can use B9, and not need to make any switches.
