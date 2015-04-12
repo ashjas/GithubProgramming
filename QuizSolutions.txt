@@ -1,0 +1,110 @@
+Quiz 1:0
+k=i+j. In each iteration, k is incremented and exactly one of i or j is incremented by equals amounts.
+47. After j iterations, i is 10+j, n is 100-j. Solve 10 + j = 100 − j to get j = 45. Add one test each for the initial iteration (j = 0) and the final exit check (j = 46).
+O(n²). The least efficient phase is O(n²).
+f(n) is O(g(n)) and g(n) is O(f(n)). f(n) ≤ 200g(n) and g(n) ≤ 10f(n) for n ≥1.
+T(n) = O(n²). √n = O(n) but not O(log(n)) or O(1).
+
+Quiz 2:80
+1 Insertion sort could take more than 2.5 hours while merge sort will always take less than 1 second. All the other choices either claim an O(n²) lower bound for insertion sort or an O(n log n) upper bound for quicksort, both of which are false.
+2 Input in ascending order is worst case for both selection sort and insertion sort. All inputs are worst case for selection sort. Descending order is good, but ascending order is worst case for insertion sort.
+3 {1, 2, . . . , n} in descending order. If the input sorted in descending order, the pivot will split the input at each stage into one segment of size n−1 and one empty segment.
+4 If we randomly choose a pivot element each time, quicksort will always terminate in time O(n log n). We can always reverse engineer a worst case input for a fixed pivot strategy. If we can find the median, we would split the array into two equal halves each time, like merge sort, so by the same analysis, the worst case would be O(n log n).
+5 [(9,0),(7,1),(6,1),(0,2),(3,5),(6,5)]. The output should be sorted by second coordinate, (7,1) should come before (6,1) and (3,5) should come before (6,5).
+
+Quiz 3:60
+I have scored 100%. these are the answers-
+1)3
+2)2
+3)3
+4)3
+5)3
+The path has at most 99 edges. With n vertices, a path cannot be longer than n−1 edges without containing a loop.
+600. The sum of the degrees counts each edge twice, once from each end, so the sum is 2 × 300 = 600.
+DFS will identify the shortest paths from v in any graph without edge weights. DFS does not identify shortest paths.
+18. In any valid linearization, the vertices {2,3,4,5} must come between 1 and 6 and the vertices {7,8,9} must come between 6 and 10. If we fix the positions of {2,3}, the positions of {4,5} are decided. Likewise if we fix the positions of {7,8}, the position of 9 is decided. This gives us the following calculation for the total number of orderings. 4 choose 2 x 3 choose 2 =  6 x 3 = 18.
+5. The courses can be scheduled as follows: {7,8}, {4,5,6}, {3}, {2}, {1}.
+
+Quiz 4:60
+
+O(n+m). Each edge is examined twice across all n iterations, so overall O(n+m).
+This strategy will solve the problem correctly but is not as efficient as Dijkstra's algorithm. The strategy is sound, but the size of the graph will be proportional to the edge weights in the original graph, so the complexity will increase.
+The claim is true for all graphs. Adding a weight to each edge increases the weight of a path proportional to the number of edges, so "long" shortest paths get penalized.  In a tree (connected acyclic graph), there is only one path between any pair of nodes, so the shortest path is invariant.
+At most n-1 edges will be deleted. This is reverse version of Kruskal's algorithm.  Any edge that is part of a cycle can be deleted without disconnecting the graph.  In the end we get a minimum cost spanning tree with exactly n-1 edges.
+Kruskal's algorithm will identify the same spanning tree on the new graph as on the old graph. The ascending order of edge weights is unchanged if each edge weight is increased by k+1, so Kruskal's algorithm runs in exactly same way as before and produces the same tree.  In general, since every spanning tree has exactly n-1 edges, the increase in weight uniformly affects all spanning trees, so the minimum cost spanning trees are unchanged. Prim's algorithm is not affected by negative weights.
+
+Quiz 5:20
+1) Array representation: O(size(c)), Pointer representation: O(n)
+
+In the array representation we have the list Members[c] which allows us to update the contents of c in time O(size(c)).   In the pointer representation there is no easy way to identify all elements that belong to component c without scanning the entire set, so it takes time O(n)
+   
+2) Strategy 1 takes time O(n) and Strategy 2 takes time O(log n)
+
+Compressing the array and heapify both take time O(n), so Strategy 1 takes time O(n).  Look up the max value in a heap takes time O(1).  Updating the node takes time O(logn), and so does delete_max().  So the second strategy takes time O(log n).
+
+3) In both min heaps and max heaps, both operations take time O(n).
+In either case, there is no obvious way to compute pred(v) and suc(v) without scanning all elements, so both cases take O(n)
+
+4) O(n log_2 n)
+The recurrence will yield O(n log_3 n), but log_3 n = log_2 n / log_2 3 = O(log_2 n).
+
+5) Constructing Q_Y> and R_Y from P_Y in time O(n) in the divide step.
+All x-coordinates could be the same, in which case we may need O(n) time for each point in P_Y to assign it to Q_Y or R_Y.
+
+Quiz 6:60
+1) O(n) whether the tree is balanced or unbalanced.   
+Inorder traversal visits and lists each element once, so it is O(n).
+   
+2) All of find, insert, delete, min, max, pred, succ
+The only operations that explained using the parent link were pred/succ, in the case where the node was a minimum/maximum node in its subtree.  But we can find the appropriate ancestor by a second scan from root to this node by checking where the path takes the last right/left turn.
+
+3) O(n)     
+The recursive construction has the recurrence T(n) = 2T(n/2) + O(1) since we can find the midpoint of an array in constant time.
+
+4) O(n log n)
+The recursive construction has the recurrence T(n) = 2T(n/2) + O(n), like merge sort, since it takes time O(n) to find the midpoint in a list.
+
+5) Bellman-Ford algorithm for single source shortest paths
+Bellman-Ford implicitly tests all possible paths of length upto n-1 from the source node to every other node, so it is not greedy.
+
+Quiz 7:0
+1) max(Profit[i+1], Profit[i+2] + Price[i+1] - Price[i] - 2,
+      Profit[i+3] + Price[i+2] - Price[i] - 2, ...
+      Profit[N] + Price[n-1] - Price[i] - 2,
+      Price[n] - Price[i] - 2)
+      
+Consider all possibilities and take the maximum.
+  
+2) N
+One entry per day, N days.
+
+3) From Profit[N] to Profit[1]
+Profit[i] depends on Profit[i+1],...,Profit[N] and Profit[N] is base case.
+
+4) O(N^2)
+Profit[i] requires time O(N-i), so overall time is 1+2+...N-1
+
+5) 8
+Buy on day 2, sell on day 6, buy on day 7 sell on day 8
+
+Quiz 8:80
+1) 5x + 6xy <= 5
+In a non-linear constraint, we have two or more variables multiplied together.
+
+2) A graph has exponentially many paths.
+Graphs have exponentially many paths, so the LP model will have exponentially many variables.
+
+3) From F, we can identify a minimum s-t cut in polynomial time.
+From F, use BFS to identify saturated edges that form a min-cut. There may be other min-cuts.
+
+4) None of the above.
+A reduction can transfer a positive property from B to A or a negative property from A to B. 
+
+5) There is a checking algorithm for C.
+The reduction establishes NP-hardness.  We have to show that C is in NP, for which a checking algorithm suffices.
+
+
+
+
+
+
