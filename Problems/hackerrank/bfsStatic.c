@@ -1,10 +1,10 @@
 
 #include<stdio.h>
 #include<stdlib.h>
-
+#define EDGE_MAX 499500 
 typedef struct _list
 {
-	int cur = 0;
+	int cur ;
 	int data[1000];
 }List;
 
@@ -13,13 +13,13 @@ typedef struct _Queue
 {
 	int vertex;
 	int data[1000];
-	int front = 0;
-	int tail = 0;
+	int front ;
+	int tail ;
 }Queue;
 
-Queue Q;
-List L[1000];
-int GLevel[1000];
+Queue *Q;
+List *L;
+int *GLevel;
 int Nnodes;
 void add2List(int u, int v)
 {
@@ -27,18 +27,18 @@ void add2List(int u, int v)
 }
 void add2Q(int v)
 {
-	Q.data[Q.tail++] = v;
+	Q->data[Q->tail++] = v;
 }
 
 int dequeue()
 {
-	int v = Q.data[Q.front++];
+	int v = Q->data[Q->front++];
 	return v;
 }
 
 int isQEmpty()
 {
-	if (Q.front == Q.tail)
+	if (Q->front == Q->tail)
 		return 1;
 	else
 		return 0;
@@ -86,6 +86,12 @@ int main()
 	scanf("%d", &T);
 	for (i = 0; i<T; i++)
 	{
+                List localL[1000];
+                int Level[1000];
+                Queue localQ;
+                Q = &localQ;
+                GLevel = Level;
+                L = localL;
 		int j = 0, prn, chd, source;
 		//int  Level[1000];
 		scanf("%d %d", &Nnodes, &Edges);
