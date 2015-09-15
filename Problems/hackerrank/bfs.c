@@ -66,6 +66,10 @@ void addEdge(int prn, int child)
         Node *t = AdjList[prn];
         while(t->next)
         {
+            // this condition checks if prn--child edge is already added, so does not add a redundant node!
+            //this was causing test case #5 to timeout!
+            if(t->next->child == child)
+                return;
             t = t->next;
         }
         t->next = n;
@@ -116,9 +120,10 @@ int main()
     for(i=0;i<T;i++)
     {
         int j =0,prn,chd,source;
-        int  Level[1000];
-        GLevel = Level;
+        //int  Level[1000];
         scanf("%d %d",&Nnodes,&Edges);
+        int *Level = malloc(sizeof(int) * Nnodes);
+        GLevel = Level;
         for(j=0;j<Nnodes;j++)
         {
             Level[j]= -1;
