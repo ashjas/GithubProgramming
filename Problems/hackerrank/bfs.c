@@ -15,7 +15,8 @@ typedef struct _Queue
 
 Queue * Q = NULL;
 Node ** AdjList = NULL;
-
+int *GLevel = NULL;
+int Nnodes;
 void add2Q(int v)
 {
     Queue *q = (Queue*)malloc(sizeof(Queue));
@@ -53,22 +54,22 @@ int isQEmpty()
 }
 void addEdge(int prn, int child)
 {
-       Node* n = (Node*)malloc(sizeof(Node));
-       n->child = child;
-       n->next = NULL;
-   if(AdjList[prn] == NULL) 
-   {
-       AdjList[prn]= n;
-   }
-   else
-   {
+    Node* n = (Node*)malloc(sizeof(Node));
+    n->child = child;
+    n->next = NULL;
+    if(AdjList[prn] == NULL) 
+    {
+        AdjList[prn]= n;
+    }
+    else
+    {
         Node *t = AdjList[prn];
         while(t->next)
         {
             t = t->next;
         }
         t->next = n;
-   }
+    }
 }
 void printQ()
 {
@@ -80,14 +81,48 @@ void printQ()
     }
     printf("\n");
 }
+void BFS(int start)
+{
+    int i;
+    GLevel[start] = 0;
+    add2Q(start);
+    while(!isQEmpty())
+    {
+        int v = dequeue();
+        Node * n = AdjList[v];
+        while(n)
+        {
+            if(GLevel[n->child] == -1)
+            {
+                GLevel[n->child] = (GLevel[v] + 1) ;
+                add2Q(n->child);
+            }   
+            n = n->next;
+        }
+    }
+    for(i=0;i<Nnodes;i++)
+    {
+        if(GLevel[i] > 0)
+            printf("%d ",GLevel[i] * 6);
+        else if(GLevel[i] != 0)
+            printf("%d ",GLevel[i] );
+    }
+    printf("\n");
+}
 int main()
 {
-    int i,T,Nnodes,Edges;
+    int i,T,Edges;
     scanf("%d",&T);
     for(i=0;i<T;i++)
     {
-        int j =0,prn,chd;
+        int j =0,prn,chd,source;
+        int  Level[1000];
+        GLevel = Level;
         scanf("%d %d",&Nnodes,&Edges);
+        for(j=0;j<Nnodes;j++)
+        {
+            Level[j]= -1;
+        }
         AdjList = (Node **) malloc(Nnodes * sizeof(Node *));
         for(j=0;j<Nnodes;j++)
         {
@@ -97,18 +132,10 @@ int main()
         {
             scanf("%d %d",&prn,&chd);
             addEdge(prn-1,chd-1);
-            addEdge(chd);
+            addEdge(chd-1,prn-1);
         }
+        scanf("%d",&source);
+        BFS(source-1);
     }
 
-    for(i =0;i<20;i++)
-    {
-        add2Q(i);
-    }
-    printQ();
-    printf("dequeing\n");
-    for( i =0;i<20;i++)
-    {
-        printf("%d ",dequeue());
-    }
 }
