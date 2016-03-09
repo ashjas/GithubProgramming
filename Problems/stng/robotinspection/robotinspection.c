@@ -13,6 +13,14 @@ typedef struct _list
 	int child;
 	struct _list * next;
 }List;
+typedef struct _cell
+{
+    int n;
+    int e;
+    int w;
+    int s;
+}cell;
+cell Cell[10000];
 Queue *Q = NULL;
 List **AdjList = NULL;
 int *Visited = NULL;
@@ -58,6 +66,68 @@ int isQEmpty()
 		return 1;
 	return 0;
 }
+void updateCell(int p, int val)
+{
+    switch(val)
+    {
+        case 1:
+            Cell[p].n=1;
+            break;
+        case 2:
+            Cell[p].e=1;
+            break;
+        case 3:
+            Cell[p].n=1;
+            Cell[p].e=1;
+            break;
+        case 4:
+            Cell[p].w=1;
+            break;
+        case 5:
+            Cell[p].n=1;
+            Cell[p].w=1;
+            break;
+        case 6:
+            Cell[p].e=1;
+            Cell[p].w=1;
+            break;
+        case 7:
+            Cell[p].n=1;
+            Cell[p].e=1;
+            Cell[p].w=1;
+            break;
+        case 8:
+            Cell[p].s=1;
+            break;
+        case 9:
+            Cell[p].n=1;
+            Cell[p].s=1;
+            break;
+        case 10:
+            Cell[p].e=1;
+            Cell[p].s=1;
+            break;
+        case 11:
+            Cell[p].n=1;
+            Cell[p].e=1;
+            Cell[p].s=1;
+            break;
+        case 12:
+            Cell[p].s=1;
+            Cell[p].w=1;
+            break;
+        case 13:
+            Cell[p].n=1;
+            Cell[p].w=1;
+            Cell[p].s=1;
+            break;
+        case 14:
+            Cell[p].s=1;
+            Cell[p].e=1;
+            Cell[p].w=1;
+            break;
+    }
+}
 void addEdge(int p, int val)
 {
 	List *l, *l2, *l3;
@@ -68,7 +138,7 @@ void addEdge(int p, int val)
 	case 1://N
 
 		a = p - C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].s == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
@@ -78,7 +148,7 @@ void addEdge(int p, int val)
 	case 2://E
 
 		a = p + 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].w == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
@@ -88,7 +158,7 @@ void addEdge(int p, int val)
 	case 4://W
 
 		a = p - 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].e == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
@@ -98,7 +168,7 @@ void addEdge(int p, int val)
 	case 8://S
 
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
@@ -108,21 +178,21 @@ void addEdge(int p, int val)
 	case 7://NEW
 
 		a = p - C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].s == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p + 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].w == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
 			l2->next = l;
 		}
 		a = p - 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].e == 1)
 		{
 			l3 = (List*)malloc(sizeof(List));
 			l3->child = a;
@@ -131,14 +201,14 @@ void addEdge(int p, int val)
 		break;
 	case 9://NS
 		a = p - C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].s == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
@@ -147,14 +217,14 @@ void addEdge(int p, int val)
 		break;
 	case 10://ES
 		a = p + 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].w == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
@@ -163,21 +233,21 @@ void addEdge(int p, int val)
 		break;
 	case 11://NES
 		a = p - C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].s == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p + 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].w == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
 			l2->next = l;
 		}
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l3 = (List*)malloc(sizeof(List));
 			l3->child = a;
@@ -186,14 +256,14 @@ void addEdge(int p, int val)
 		break;
 	case 12://SW ------
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p - 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].e == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
@@ -202,21 +272,21 @@ void addEdge(int p, int val)
 		break;
 	case 13://NSW
 		a = p - C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].s == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p - 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].e == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
 			l2->next = l;
 		}
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l3 = (List*)malloc(sizeof(List));
 			l3->child = a;
@@ -225,21 +295,21 @@ void addEdge(int p, int val)
 		break;
 	case 14://EWS
 		a = p + 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].w == 1)
 		{
 			l = (List*)malloc(sizeof(List));
 			l->child = a;
 			l->next = NULL;
 		}
 		a = p - 1;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].e == 1)
 		{
 			l2 = (List*)malloc(sizeof(List));
 			l2->child = a;
 			l2->next = l;
 		}
 		a = p + C;
-		if (a >= 0 && a < R*C)
+		if (a >= 0 && a < R*C && Cell[a].n == 1)
 		{
 			l3 = (List*)malloc(sizeof(List));
 			l3->child = a;
@@ -331,11 +401,26 @@ int main()
 			for (k = 0; k < C; k++, count++)
 			{
 				scanf("%d", &Arr[j][k]);
-				addEdge(count, Arr[j][k]);
 				if (j == X && k == Y)
 					src = count;
 			}
 		}
+                count =0;
+		for (j = 0; j < R; j++)
+		{
+			for (k = 0; k < C; k++, count++)
+			{
+                            updateCell(count,Arr[j][k]);
+                        }
+                }
+                count =0;
+		for (j = 0; j < R; j++)
+		{
+			for (k = 0; k < C; k++, count++)
+			{
+				addEdge(count, Arr[j][k]);
+                        }
+                }
 		BFS(src, L);
 		int answer = 0;
 		count = 0;
