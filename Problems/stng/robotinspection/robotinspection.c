@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include"stdafx.h"
 #include<stdlib.h>
 #include<limits.h>
 
@@ -15,21 +16,107 @@ typedef struct _list
 }List;
 typedef struct _cell
 {
-    int n;
-    int e;
-    int w;
-    int s;
+	int n;
+	int e;
+	int w;
+	int s;
 }cell;
 cell Cell[10000];
 Queue *Q = NULL;
-List **AdjList = NULL;
-int *Visited = NULL;
-//int *Level = NULL;
 int Level[10000];
-int *Parent = NULL;
 int R, C, L, X, Y;
-int MAX_DIST = INT_MAX;
 int Arr[100][100];
+int _4[4] = { 0 };//NEWS
+void isSafe(int _p)
+{
+	int p;
+	p = _p;
+	_4[0] = _4[1] = _4[2] = _4[3] = 0;
+	p = p - C;//N
+	if (Cell[_p].n == 1 && p >= 0 && p < (R*C))
+		if (Cell[p].s == 1)
+			_4[0] = 1;
+
+	p = _p;
+	p = p + 1;//E
+	if (Cell[_p].e == 1 && p >= 0 && p < (R*C))
+		if (Cell[p].w == 1)
+			_4[1] = 1;
+
+	p = _p;
+	p = p - 1;//W
+	if (Cell[_p].w == 1 && p >= 0 && p < (R*C))
+		if (Cell[p].e == 1)
+			_4[2] = 1;
+
+	p = _p;
+	p = p + C;//S
+	if (Cell[_p].s == 1 && p >= 0 && p < (R*C))
+		if (Cell[p].n == 1)
+			_4[3] = 1;
+}
+void updateCell(int p, int val)
+{
+	switch (val)
+	{
+	case 1:
+		Cell[p].n = 1;
+		break;
+	case 2:
+		Cell[p].e = 1;
+		break;
+	case 3:
+		Cell[p].n = 1;
+		Cell[p].e = 1;
+		break;
+	case 4:
+		Cell[p].s = 1;
+		break;
+	case 5:
+		Cell[p].s = 1;
+		Cell[p].n = 1;
+		break;
+	case 6:
+		Cell[p].e = 1;
+		Cell[p].s = 1;
+		break;
+	case 7:
+		Cell[p].n = 1;
+		Cell[p].e = 1;
+		Cell[p].s = 1;
+		break;
+	case 8:
+		Cell[p].w = 1;
+		break;
+	case 9:
+		Cell[p].n = 1;
+		Cell[p].w = 1;
+		break;
+	case 10:
+		Cell[p].e = 1;
+		Cell[p].w = 1;
+		break;
+	case 11:
+		Cell[p].n = 1;
+		Cell[p].e = 1;
+		Cell[p].w = 1;
+		break;
+	case 12:
+		Cell[p].s = 1;
+		Cell[p].w = 1;
+		break;
+	case 13:
+		Cell[p].n = 1;
+		Cell[p].s = 1;
+		Cell[p].w = 1;
+		break;
+	case 14:
+		Cell[p].e = 1;
+		Cell[p].w = 1;
+		Cell[p].s = 1;
+		break;
+	}
+}
 void enQ(int v)
 {
 	Queue * q = (Queue*)malloc(sizeof(Queue));
@@ -57,7 +144,7 @@ int deQ()
 		Q->next->tail = Q->tail;// Q->next will be NULL for last item.
 	Q = Q->next;
 	if (q)
-	free(q);
+		free(q);
 	return n;
 }
 int isQEmpty()
@@ -66,313 +153,70 @@ int isQEmpty()
 		return 1;
 	return 0;
 }
-void updateCell(int p, int val)
-{
-    switch(val)
-    {
-        case 1:
-            Cell[p].n=1;
-            break;
-        case 2:
-            Cell[p].e=1;
-            break;
-        case 3:
-            Cell[p].n=1;
-            Cell[p].e=1;
-            break;
-        case 4:
-            Cell[p].w=1;
-            break;
-        case 5:
-            Cell[p].n=1;
-            Cell[p].w=1;
-            break;
-        case 6:
-            Cell[p].e=1;
-            Cell[p].w=1;
-            break;
-        case 7:
-            Cell[p].n=1;
-            Cell[p].e=1;
-            Cell[p].w=1;
-            break;
-        case 8:
-            Cell[p].s=1;
-            break;
-        case 9:
-            Cell[p].n=1;
-            Cell[p].s=1;
-            break;
-        case 10:
-            Cell[p].e=1;
-            Cell[p].s=1;
-            break;
-        case 11:
-            Cell[p].n=1;
-            Cell[p].e=1;
-            Cell[p].s=1;
-            break;
-        case 12:
-            Cell[p].s=1;
-            Cell[p].w=1;
-            break;
-        case 13:
-            Cell[p].n=1;
-            Cell[p].w=1;
-            Cell[p].s=1;
-            break;
-        case 14:
-            Cell[p].s=1;
-            Cell[p].e=1;
-            Cell[p].w=1;
-            break;
-    }
-}
-void addEdge(int p, int val)
-{
-	List *l, *l2, *l3;
-	l = l2 = l3 = NULL;
-	int a;
-	switch (val)
-	{
-	case 1://N
 
-		a = p - C;
-		if (a >= 0 && a < R*C && Cell[a].s == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		break;
-	case 2://E
-
-		a = p + 1;
-		if (a >= 0 && a < R*C && Cell[a].w == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		break;
-	case 4://W
-
-		a = p - 1;
-		if (a >= 0 && a < R*C && Cell[a].e == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		break;
-	case 8://S
-
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		break;
-	case 7://NEW
-
-		a = p - C;
-		if (a >= 0 && a < R*C && Cell[a].s == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p + 1;
-		if (a >= 0 && a < R*C && Cell[a].w == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		a = p - 1;
-		if (a >= 0 && a < R*C && Cell[a].e == 1)
-		{
-			l3 = (List*)malloc(sizeof(List));
-			l3->child = a;
-			l3->next = l2;
-		}
-		break;
-	case 9://NS
-		a = p - C;
-		if (a >= 0 && a < R*C && Cell[a].s == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		break;
-	case 10://ES
-		a = p + 1;
-		if (a >= 0 && a < R*C && Cell[a].w == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		break;
-	case 11://NES
-		a = p - C;
-		if (a >= 0 && a < R*C && Cell[a].s == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p + 1;
-		if (a >= 0 && a < R*C && Cell[a].w == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l3 = (List*)malloc(sizeof(List));
-			l3->child = a;
-			l3->next = l2;
-		}
-		break;
-	case 12://SW ------
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p - 1;
-		if (a >= 0 && a < R*C && Cell[a].e == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		break;
-	case 13://NSW
-		a = p - C;
-		if (a >= 0 && a < R*C && Cell[a].s == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p - 1;
-		if (a >= 0 && a < R*C && Cell[a].e == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l3 = (List*)malloc(sizeof(List));
-			l3->child = a;
-			l3->next = l2;
-		}
-		break;
-	case 14://EWS
-		a = p + 1;
-		if (a >= 0 && a < R*C && Cell[a].w == 1)
-		{
-			l = (List*)malloc(sizeof(List));
-			l->child = a;
-			l->next = NULL;
-		}
-		a = p - 1;
-		if (a >= 0 && a < R*C && Cell[a].e == 1)
-		{
-			l2 = (List*)malloc(sizeof(List));
-			l2->child = a;
-			l2->next = l;
-		}
-		a = p + C;
-		if (a >= 0 && a < R*C && Cell[a].n == 1)
-		{
-			l3 = (List*)malloc(sizeof(List));
-			l3->child = a;
-			l3->next = l2;
-		}
-		break;
-	}
-
-	if (AdjList[p] == NULL)
-	{
-		if (l3 != NULL)
-			AdjList[p] = l3;
-		else if (l2 != NULL)
-			AdjList[p] = l2;
-		else
-			AdjList[p] = l;
-	}
-
-}
 void BFS(int s, int L)
 {
+	int i;
 	Level[s] = 0;
 	enQ(s);
 	while (!isQEmpty())
 	{
 		int v = deQ();
-		Visited[v] = 1;
-		List * l = AdjList[v];
-		while (l)
+		int val;
+		isSafe(v);
+		for (i = 0; i < 4; i++)
 		{
-			if (Level[l->child] == -1)
+			switch (i)
 			{
-				Level[l->child] = Level[v] + 1;
-				if (Level[l->child] < L)
-					enQ(l->child);
+			case 0://N
+				val = v - C;
+				if (Level[val]== -1 && _4[i] == 1)
+				{
+					Level[val] = Level[v] + 1;
+					if (Level[val] < L)
+						enQ(val);
+				}
+				break;
+			case 1://E
+				val = v + 1;
+				if (Level[val] == -1 && _4[i] == 1)
+				{
+					Level[val] = Level[v] + 1;
+					if (Level[val] < L)
+						enQ(val);
+				}
+				break;
+			case 2://W
+				val = v - 1;
+				if (Level[val] == -1 && _4[i] == 1)
+				{
+					Level[val] = Level[v] + 1;
+					if (Level[val] < L)
+						enQ(val);
+				}
+				break;
+			case 3://S
+				val = v + C;
+				if (Level[val] == -1 && _4[i] == 1)
+				{
+					Level[val] = Level[v] + 1;
+					if (Level[val] < L)
+						enQ(val);
+				}
+				break;
+			default:
+				break;
 			}
-			l = l->next;
+			
 		}
 	}
 }
-/*void cleanUpAdjList()
-{
-int i;
-for (i = 0; i<Nnodes; i++)
-{
-if (AdjList[i] != NULL)
-{
-List * l = AdjList[i];
-while (l)
-{
-List * t = l;
-l = l->next;
-free(t);
-}
-}
-}
-free(AdjList);
-}*/
+
 int main()
 {
 
 	int i, j, k;
-	int T, N, E, S, p, c, w;
+	int T;
 	freopen("Text.txt", "r", stdin);
 	setbuf(stdout, NULL);
 	scanf("%d", &T);
@@ -380,20 +224,10 @@ int main()
 	{
 		scanf("%d %d %d %d %d", &R, &C, &L, &X, &Y);
 
-		AdjList = (List**)malloc(R * C * sizeof(List*));
-		Visited = (int*)malloc(R * C * sizeof(int));
-		//Level = (int*)malloc(R * C * sizeof(int));
-		Parent = (int*)malloc(R * C * sizeof(int));
-		for (j = 0; j<(R*C); j++)
-		{
-			AdjList[j] = NULL;
-			Visited[j] = 0;
+
+		for (j = 0; j < 10000; j++)
 			Level[j] = -1;
-			Parent[j] = -1;
-		}
-		for (j = 0; j < 10000;j++)
-			Level[j] = -1;
-		
+
 		X = X - 1; Y = Y - 1;
 		int count = 0, src = -1;
 		for (j = 0; j<R; j++)
@@ -405,22 +239,14 @@ int main()
 					src = count;
 			}
 		}
-                count =0;
+		count = 0;
 		for (j = 0; j < R; j++)
 		{
 			for (k = 0; k < C; k++, count++)
 			{
-                            updateCell(count,Arr[j][k]);
-                        }
-                }
-                count =0;
-		for (j = 0; j < R; j++)
-		{
-			for (k = 0; k < C; k++, count++)
-			{
-				addEdge(count, Arr[j][k]);
-                        }
-                }
+				updateCell(count, Arr[j][k]);
+			}
+		}
 		BFS(src, L);
 		int answer = 0;
 		count = 0;
@@ -429,21 +255,15 @@ int main()
 			for (k = 0; k < C; k++, count++)
 			{
 				if (Level[count] > 0)
-                                {
+				{
 					answer++;
-                                        //printf(" %d",count);
-                                }
-                                printf(" %d ",Level[count]);
+				}
+				printf(" %d ", Level[count]);
 			}
-                        printf("\n");
+			printf("\n");
 		}
-
-		printf("Case #%d\n",i+1);
-		printf("%d\n", answer+1);
-		//free(Visited);
-		//free(Dist);
-		//free(Parent);
-		//cleanUpAdjList();
+		printf("Case #%d\n", i + 1);
+		printf("%d\n", answer + 1);
 	}
 	return 0;
 }
@@ -480,5 +300,32 @@ int main()
 7 11 11 14 13
 7 11 14 14 9
 7 11 14 14 9
+
+correct:
+Case #1
+4
+Case #2
+9
+Case #3
+15
+Case #4
+22
+Case #5
+29
+
+case 1://N
+case 2://E
+case 3://NE
+case 4://S
+case 5://SN
+case 6://ES
+case 8://W
+case 7://NES
+case 9://NW
+case 10://EW
+case 11://NEW
+case 12://SW
+case 13://NSW
+case 14://EWS
 
 #endif
