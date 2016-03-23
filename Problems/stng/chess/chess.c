@@ -31,7 +31,7 @@ typedef struct ans
     int y;
     int minWt;
 }Ans;
-Ans answer[1000];
+cell answer[1000];
 int pathY = 0;
 #define MAXWT 400000
 
@@ -92,37 +92,36 @@ void BFS(int x, int y)
     int i,j,p,q;
     cell tmp = dummy; int minWt=MAXWT;
     Parent[x][y] = tmp;
-    cell c ;c.x=x,c.y=y,c.wt=Arr[x][y].wt;
-    enQ(c);
+    //cell c ;c.x=x,c.y=y,c.wt=Arr[x][y].wt;
+    enQ(Arr[x][y]);
+    int power=-1;
     while (!isQEmpty())
     {
         cell v = deQ();
+        if(power < 2;)
+        power++;
         for(i=0;i<6;i++)
         {
             int X = v.x+ ends[i][0];
             int Y = v.y+ ends[i][1];
             if(X >= 0 && X < R && Y >= 0 && Y < C && Parent[X][Y].x == dummy.x)
             {
-                int wtSum = Arr[v.x][v.y].wt;
-                for(j=0;j<3;j+=2)// for adding up weights, and setting parent for backtracking
+                /*for(j=0;j<3;j+=2)// for adding up weights, and setting parent for backtracking
                 {
                     p = v.x+ moves[i][j];
                     q = v.y+ moves[i][j+1];
-                    wtSum += Arr[p][q].wt;
                     Parent[p][q] = Arr[v.x][v.y];
-                }
-                Arr[X][Y].wt = wtSum;
-                cell c; c.x=X;c.y=Y;c.wt=Arr[X][Y].wt;
-                enQ(c);
-                if(X == 0)//reached the top row.
+                }*/
+                Arr[X][Y].wt += Arr[v.x][v.x].wt;
+                Parent[X][Y] = Arr[v.x][v.y];
+                //cell c; c.x=X;c.y=Y;c.wt=Arr[X][Y].wt;
+                enQ(Arr[X][Y]);
+                if(X == 0 && answer[x].wt > Arr[X][Y].wt)//reached the top row.
                 {
-                    if(Arr[X][Y].wt < minWt)
-                    {
-                        minWt = Arr[X][Y].wt;
-                       answer[x].x = X;
-                       answer[x].y = Y;
-                       answer[x].minWt = minWt;
-                    }
+                    answer[x] = Arr[X][Y];
+                    //answer[x].x = X;
+                    //answer[x].y = Y;
+                    //answer[x].minWt = Arr[X][Y].wt;
                 }
             }
 
@@ -191,6 +190,10 @@ int main()
             }
         }
 
+        for (j = 0; j < C; j++)// for home row.
+        {
+            answer[j].wt=MAXWT;
+        }
         count = 0;
         for (j = 0; j < C; j++)// for home row.
         {
@@ -199,15 +202,15 @@ int main()
         }
         for(j=0 ; j< C; j++)
         {
-            if(answer[j].minWt < min)
+            if(answer[j].wt < min)
             {
-                min = answer[j].minWt;
+                min = answer[j].wt;
                 minJ = j;
             }
         }
         printf("Case #%d\n", i + 1);
-        printf("%d\n", answer[minJ].minWt);
-        printPath(answer[minJ].x,answer[minJ].y);
+        printf("%d\n", answer[minJ].wt);
+//        printPath(answer[minJ].x,answer[minJ].y);
     }
     return 0;
 }
